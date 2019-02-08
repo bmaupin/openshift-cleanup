@@ -9,22 +9,17 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type OpenShiftObject struct {
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildConfig struct {
 	TypeMeta `yaml:",inline"`
-	ObjectMeta `yaml:",inline"`
+	ObjectMeta `yaml:"metadata"`
 
-	Spec OpenShiftObjectSpec `yaml:",omitempty"`
+	Spec BuildConfigSpec `yaml:",omitempty"`
+	Status BuildConfigStatus
 }
 
-type OpenShiftObjectMetadata struct {
-	Labels struct {
-		App string `yaml:"app,omitempty"`
-	} `yaml:",omitempty"`
-	Name string `yaml:"name,omitempty"`
-	Namespace string `yaml:"namespace,omitempty"`
-}
-
-type OpenShiftObjectSpec struct {
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildConfigSpec struct {
 	NodeSelector *struct {
 		Type string `yaml:"type,omitempty"`
 	} `yaml:"nodeSelector"`
@@ -42,8 +37,6 @@ type OpenShiftObjectSpec struct {
 		}
 		Type string `yaml:"type,omitempty"`
 	}
-	// Status holds any relevant information about a build config
-	Status BuildConfigStatus
 	Strategy *struct {
 		SourceStrategy *struct {
 			From *struct {
@@ -57,12 +50,13 @@ type OpenShiftObjectSpec struct {
 	Triggers []BuildTriggerPolicy
 }
 
-// BuildConfigStatus contains current state of the build config object.
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
 type BuildConfigStatus struct {
 	// LastVersion is used to inform about number of last triggered build.
 	LastVersion int64
 }
 
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
 type BuildTriggerPolicy struct {
 	Generic WebHookTrigger `yaml:",omitempty"`
 	Github WebHookTrigger `yaml:",omitempty"`
@@ -70,24 +64,36 @@ type BuildTriggerPolicy struct {
 	Type string `yaml:"type"`
 }
 
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
 type ImageChangeTrigger struct {}
 
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/runtime/interfaces.go
+type Object interface {}
+
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
 type ObjectMeta struct {
-	Metadata OpenShiftObjectMetadata `yaml:"metadata,omitempty"`
+	Labels struct {
+		App string `yaml:"app,omitempty"`
+	} `yaml:",omitempty"`
+	Name string `yaml:"name,omitempty"`
+	Namespace string `yaml:"namespace,omitempty"`
 }
 
+// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
 type Template struct {
 	TypeMeta `yaml:",inline"`
-	ObjectMeta `yaml:",inline"`
+	ObjectMeta `yaml:"metadata"`
 
-	Objects []OpenShiftObject
+	Objects []Object
 }
 
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
 type TypeMeta struct {
 	Kind string `yaml:"kind,omitempty"`
 	APIVersion string `yaml:"apiVersion,omitempty"`
 }
 
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
 type WebHookTrigger struct {}
 
 func main() {
@@ -101,35 +107,47 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	// fmt.Printf("--- template:\n%v\n\n", template)
-
-	fmt.Printf("DEBUG: %d\n", len(template.Objects))
 
 	template = cleanTemplateObjects(template)
 
-	cleanedtemplate, err := yaml.Marshal(&template)
-	fmt.Printf("--- template dump:\n%s\n\n", string(cleanedtemplate))
-
-	fmt.Printf("DEBUG: %d\n", len(template.Objects))
+	marshaledTemplate, err := yaml.Marshal(&template)
+	fmt.Printf("--- template dump:\n%s\n", string(marshaledTemplate))
 }
 
 func cleanTemplateObjects(template Template) Template {
-	newTemplateObjects := []OpenShiftObject{}
+	newTemplateObjects := []Object{}
 
-	for _, templateObject := range template.Objects {
-		// Builds will be recreated by the BuildConfig
-		if templateObject.Kind == "Build" {
-			continue
-		// Pods will be recreated by the DeploymentConfig
-		} else if templateObject.Kind == "Pod" {
-			continue
-		} else if templateObject.Kind == "ReplicationController" {
-			continue
-		} else {
-			newTemplateObjects = append(newTemplateObjects, templateObject)
+	for _, object := range template.Objects {
+		objectKind := object.(map[interface {}]interface {})["kind"]
+
+		// Is there a better way to do this? Seems hacky: marshaling, unmarshaling, and then replacing each object ...
+		switch objectKind {
+			case "BuildConfig":
+				marshaledBuildConfig, err := yaml.Marshal(&object)
+				if err != nil {
+					log.Fatalf("error: %v", err)
+				}
+				buildConfig := BuildConfig{}
+				if err := yaml.Unmarshal(marshaledBuildConfig, &buildConfig); err != nil {
+					log.Fatalf("error: %v", err)
+				}
+				newTemplateObjects = append(newTemplateObjects, buildConfig)
+
+			// Builds will be recreated by the BuildConfig
+			case "Build":
+				fallthrough
+			// Pods will be recreated by the DeploymentConfig
+			case "Pod":
+				fallthrough
+			case "ReplicationController":
+				// noop
+
+			default:
+				log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", objectKind))
 		}
-		template.Objects = newTemplateObjects
 	}
+
+	template.Objects = newTemplateObjects
 
 	return template
 }
