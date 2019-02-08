@@ -88,9 +88,7 @@ type TypeMeta struct {
 	APIVersion string `yaml:"apiVersion,omitempty"`
 }
 
-type WebHookTrigger struct {
-	Secret string `yaml:"secret,omitempty"`
-}
+type WebHookTrigger struct {}
 
 func main() {
 	contents, err := ioutil.ReadFile(filepath.Join("testdata", "exported-openshift-template.yml"))
