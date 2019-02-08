@@ -37,23 +37,19 @@ type BuildConfigSpec struct {
 		}
 		Type string `yaml:"type,omitempty"`
 	}
-	Strategy *struct {
-		SourceStrategy *struct {
-			From *struct {
-				Kind string `yaml:"kind,omitempty"`
-				Name string `yaml:"name,omitempty"`
-				Namespace string `yaml:"namespace,omitempty"`
-			}
-		}
-		Type string `yaml:"type,omitempty"`
-	}
+	Strategy BuildStrategy
 	Triggers []BuildTriggerPolicy
 }
 
 // https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
 type BuildConfigStatus struct {
-	// LastVersion is used to inform about number of last triggered build.
 	LastVersion int64
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildStrategy struct {
+	SourceStrategy *SourceBuildStrategy `yaml:"sourceStrategy"`
+	Type string `yaml:"type"`
 }
 
 // https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
@@ -77,6 +73,14 @@ type ObjectMeta struct {
 	} `yaml:",omitempty"`
 	Name string `yaml:"name,omitempty"`
 	Namespace string `yaml:"namespace,omitempty"`
+}
+
+type SourceBuildStrategy struct {
+	From *struct {
+		Kind string `yaml:"kind,omitempty"`
+		Name string `yaml:"name,omitempty"`
+		Namespace string `yaml:"namespace,omitempty"`
+	}
 }
 
 // https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
