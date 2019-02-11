@@ -1,157 +1,110 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"path/filepath"
+        "fmt"
+        "os"
 
-	"gopkg.in/yaml.v2"
+        appsv1 "github.com/openshift/api/apps/v1"
+        authorizationv1 "github.com/openshift/api/authorization/v1"
+        buildv1 "github.com/openshift/api/build/v1"
+        imagev1 "github.com/openshift/api/image/v1"
+        networkv1 "github.com/openshift/api/network/v1"
+        oauthv1 "github.com/openshift/api/oauth/v1"
+        projectv1 "github.com/openshift/api/project/v1"
+        quotav1 "github.com/openshift/api/quota/v1"
+        routev1 "github.com/openshift/api/route/v1"
+        securityv1 "github.com/openshift/api/security/v1"
+        templatev1 "github.com/openshift/api/template/v1"
+        userv1 "github.com/openshift/api/user/v1"
+
+        corev1 "k8s.io/api/core/v1"
+        "k8s.io/apimachinery/pkg/runtime/serializer/json"
+        "k8s.io/client-go/kubernetes/scheme"
 )
 
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type BuildConfig struct {
-	TypeMeta `yaml:",inline"`
-	ObjectMeta `yaml:"metadata"`
+// yaml is an example YAML file.
+var yaml = []byte(`
+kind: List
+apiVersion: v1
+items:
+# a core Kubernetes object
+- kind: Pod
+  apiVersion: v1
+# a non-core Kubernetes object
+- kind: Job
+  apiVersion: batch/v1
+# a legacy OpenShift object
+- kind: Route
+  apiVersion: v1
+# a non-legacy OpenShift object
+- kind: Route
+  apiVersion: route.openshift.io/v1
+`)
 
-	Spec BuildConfigSpec `yaml:",omitempty"`
-	Status BuildConfigStatus
+func init() {
+        // The Kubernetes Go client (nested within the OpenShift Go client)
+        // automatically registers its types in scheme.Scheme, however the
+        // additional OpenShift types must be registered manually.  AddToScheme
+        // registers the API group types (e.g. route.openshift.io/v1, Route) only.
+        appsv1.AddToScheme(scheme.Scheme)
+        authorizationv1.AddToScheme(scheme.Scheme)
+        buildv1.AddToScheme(scheme.Scheme)
+        imagev1.AddToScheme(scheme.Scheme)
+        networkv1.AddToScheme(scheme.Scheme)
+        oauthv1.AddToScheme(scheme.Scheme)
+        projectv1.AddToScheme(scheme.Scheme)
+        quotav1.AddToScheme(scheme.Scheme)
+        routev1.AddToScheme(scheme.Scheme)
+        securityv1.AddToScheme(scheme.Scheme)
+        templatev1.AddToScheme(scheme.Scheme)
+        userv1.AddToScheme(scheme.Scheme)
+
+        // If you need to serialize/deserialize legacy (non-API group) OpenShift
+        // types (e.g. v1, Route), these must be additionally registered using
+        // AddToSchemeInCoreGroup.
+        appsv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        authorizationv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        buildv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        imagev1.AddToSchemeInCoreGroup(scheme.Scheme)
+        networkv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        oauthv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        projectv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        quotav1.AddToSchemeInCoreGroup(scheme.Scheme)
+        routev1.AddToSchemeInCoreGroup(scheme.Scheme)
+        securityv1.AddToSchemeInCoreGroup(scheme.Scheme)
+        templatev1.AddToSchemeInCoreGroup(scheme.Scheme)
+        userv1.AddToSchemeInCoreGroup(scheme.Scheme)
 }
-
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type BuildConfigSpec struct {
-	NodeSelector *struct {
-		Type string `yaml:"type,omitempty"`
-	} `yaml:"nodeSelector"`
-	Output *struct {
-		To *struct {
-			Kind string `yaml:"kind,omitempty"`
-			Name string `yaml:"name,omitempty"`
-		}
-	}
-	RunPolicy string `yaml:"runPolicy,omitempty"`
-	Source *struct {
-		Git *struct {
-			Ref string `yaml:"ref,omitempty"`
-			Uri string `yaml:"uri,omitempty"`
-		}
-		Type string `yaml:"type,omitempty"`
-	}
-	Strategy BuildStrategy
-	Triggers []BuildTriggerPolicy
-}
-
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type BuildConfigStatus struct {
-	LastVersion int64
-}
-
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type BuildStrategy struct {
-	SourceStrategy *SourceBuildStrategy `yaml:"sourceStrategy"`
-	Type string `yaml:"type"`
-}
-
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type BuildTriggerPolicy struct {
-	Generic WebHookTrigger `yaml:",omitempty"`
-	Github WebHookTrigger `yaml:",omitempty"`
-	ImageChange ImageChangeTrigger `yaml:"imageChange,omitempty"`
-	Type string `yaml:"type"`
-}
-
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type ImageChangeTrigger struct {}
-
-// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/runtime/interfaces.go
-type Object interface {}
-
-// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
-type ObjectMeta struct {
-	Labels struct {
-		App string `yaml:"app,omitempty"`
-	} `yaml:",omitempty"`
-	Name string `yaml:"name,omitempty"`
-	Namespace string `yaml:"namespace,omitempty"`
-}
-
-type SourceBuildStrategy struct {
-	From *struct {
-		Kind string `yaml:"kind,omitempty"`
-		Name string `yaml:"name,omitempty"`
-		Namespace string `yaml:"namespace,omitempty"`
-	}
-}
-
-// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
-type Template struct {
-	TypeMeta `yaml:",inline"`
-	ObjectMeta `yaml:"metadata"`
-
-	Objects []Object
-}
-
-// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
-type TypeMeta struct {
-	Kind string `yaml:"kind,omitempty"`
-	APIVersion string `yaml:"apiVersion,omitempty"`
-}
-
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
-type WebHookTrigger struct {}
 
 func main() {
-	contents, err := ioutil.ReadFile(filepath.Join("testdata", "exported-openshift-template.yml"))
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
+        // Create a YAML serializer.  JSON is a subset of YAML, so is supported too.
+        s := json.NewYAMLSerializer(json.DefaultMetaFactory, scheme.Scheme,
+                scheme.Scheme)
 
-	template := Template{}
-	err = yaml.Unmarshal(contents, &template)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
+        // Decode the YAML to an object.
+        var list corev1.List
+        _, _, err := s.Decode(yaml, nil, &list)
+        if err != nil {
+                panic(err)
+        }
 
-	template = cleanTemplateObjects(template)
+        // Some types, e.g. List, contain RawExtensions.  If the appropriate types
+        // are registered, these can be decoded in a second pass.
+        for i, o := range list.Items {
+                o.Object, _, err = s.Decode(o.Raw, nil, nil)
+                if err != nil {
+                        panic(err)
+                }
+                o.Raw = nil
 
-	marshaledTemplate, err := yaml.Marshal(&template)
-	fmt.Printf("--- template dump:\n%s\n", string(marshaledTemplate))
-}
+                list.Items[i] = o
+        }
 
-func cleanTemplateObjects(template Template) Template {
-	newTemplateObjects := []Object{}
+        fmt.Printf("%#v\n", list)
 
-	for _, object := range template.Objects {
-		objectKind := object.(map[interface {}]interface {})["kind"]
-
-		// Is there a better way to do this? Seems hacky: marshaling, unmarshaling, and then replacing each object ...
-		switch objectKind {
-			case "BuildConfig":
-				marshaledBuildConfig, err := yaml.Marshal(&object)
-				if err != nil {
-					log.Fatalf("error: %v", err)
-				}
-				buildConfig := BuildConfig{}
-				if err := yaml.Unmarshal(marshaledBuildConfig, &buildConfig); err != nil {
-					log.Fatalf("error: %v", err)
-				}
-				newTemplateObjects = append(newTemplateObjects, buildConfig)
-
-			// Builds will be recreated by the BuildConfig
-			case "Build":
-				fallthrough
-			// Pods will be recreated by the DeploymentConfig
-			case "Pod":
-				fallthrough
-			case "ReplicationController":
-				// noop
-
-			default:
-				log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", objectKind))
-		}
-	}
-
-	template.Objects = newTemplateObjects
-
-	return template
+        // Encode the object to YAML.
+        err = s.Encode(&list, os.Stdout)
+        if err != nil {
+                panic(err)
+        }
 }
