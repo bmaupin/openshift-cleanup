@@ -150,5 +150,14 @@ func main() {
 // }
 
 func cleanBuildConfig(buildConfig *buildv1.BuildConfig) *buildv1.BuildConfig {
+	for _, trigger := range buildConfig.Spec.Triggers {
+		if trigger.Type == "Generic" {
+			// There's no way to actually modify trigger.GenericWebHook to remove the secret ...
+			fmt.Printf("DEBUG: %s\n", trigger.GenericWebHook.Secret)
+		} else if trigger.Type == "GitHub" {
+			fmt.Printf("DEBUG: %s\n", trigger.GitHubWebHook.Secret)
+		}
+	}
+
 	return buildConfig
 }
