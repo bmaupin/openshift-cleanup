@@ -4,160 +4,154 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
 
-	appsv1 "github.com/openshift/api/apps/v1"
-	authorizationv1 "github.com/openshift/api/authorization/v1"
-	buildv1 "github.com/openshift/api/build/v1"
-	imagev1 "github.com/openshift/api/image/v1"
-	networkv1 "github.com/openshift/api/network/v1"
-	oauthv1 "github.com/openshift/api/oauth/v1"
-	projectv1 "github.com/openshift/api/project/v1"
-	quotav1 "github.com/openshift/api/quota/v1"
-	routev1 "github.com/openshift/api/route/v1"
-	securityv1 "github.com/openshift/api/security/v1"
-	templatev1 "github.com/openshift/api/template/v1"
-	userv1 "github.com/openshift/api/user/v1"
-
-	corev1 "k8s.io/api/core/v1"
-	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/serializer/json"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/kubernetes/scheme"
+	"gopkg.in/yaml.v2"
 )
 
-func init() {
-	// The Kubernetes Go client (nested within the OpenShift Go client)
-	// automatically registers its types in scheme.Scheme, however the
-	// additional OpenShift types must be registered manually.  AddToScheme
-	// registers the API group types (e.g. route.openshift.io/v1, Route) only.
-	appsv1.AddToScheme(scheme.Scheme)
-	authorizationv1.AddToScheme(scheme.Scheme)
-	buildv1.AddToScheme(scheme.Scheme)
-	imagev1.AddToScheme(scheme.Scheme)
-	networkv1.AddToScheme(scheme.Scheme)
-	oauthv1.AddToScheme(scheme.Scheme)
-	projectv1.AddToScheme(scheme.Scheme)
-	quotav1.AddToScheme(scheme.Scheme)
-	routev1.AddToScheme(scheme.Scheme)
-	securityv1.AddToScheme(scheme.Scheme)
-	templatev1.AddToScheme(scheme.Scheme)
-	userv1.AddToScheme(scheme.Scheme)
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildConfig struct {
+	TypeMeta `yaml:",inline"`
+	ObjectMeta `yaml:"metadata"`
 
-	// If you need to serialize/deserialize legacy (non-API group) OpenShift
-	// types (e.g. v1, Route), these must be additionally registered using
-	// AddToSchemeInCoreGroup.
-	appsv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	authorizationv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	buildv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	imagev1.AddToSchemeInCoreGroup(scheme.Scheme)
-	networkv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	oauthv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	projectv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	quotav1.AddToSchemeInCoreGroup(scheme.Scheme)
-	routev1.AddToSchemeInCoreGroup(scheme.Scheme)
-	securityv1.AddToSchemeInCoreGroup(scheme.Scheme)
-	templatev1.AddToSchemeInCoreGroup(scheme.Scheme)
-	userv1.AddToSchemeInCoreGroup(scheme.Scheme)
+	Spec BuildConfigSpec `yaml:",omitempty"`
+	Status BuildConfigStatus
 }
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildConfigSpec struct {
+	NodeSelector *struct {
+		Type string `yaml:"type,omitempty"`
+	} `yaml:"nodeSelector"`
+	Output *struct {
+		To *struct {
+			Kind string `yaml:"kind,omitempty"`
+			Name string `yaml:"name,omitempty"`
+		}
+	}
+	RunPolicy string `yaml:"runPolicy,omitempty"`
+	Source *struct {
+		Git *struct {
+			Ref string `yaml:"ref,omitempty"`
+			Uri string `yaml:"uri,omitempty"`
+		}
+		Type string `yaml:"type,omitempty"`
+	}
+	Strategy BuildStrategy
+	Triggers []BuildTriggerPolicy
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildConfigStatus struct {
+	LastVersion int64
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildStrategy struct {
+	SourceStrategy *SourceBuildStrategy `yaml:"sourceStrategy"`
+	Type string `yaml:"type"`
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type BuildTriggerPolicy struct {
+	Generic WebHookTrigger `yaml:",omitempty"`
+	Github WebHookTrigger `yaml:",omitempty"`
+	ImageChange ImageChangeTrigger `yaml:"imageChange,omitempty"`
+	Type string `yaml:"type"`
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type ImageChangeTrigger struct {}
+
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/runtime/interfaces.go
+type Object interface {}
+
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
+type ObjectMeta struct {
+	Labels struct {
+		App string `yaml:"app,omitempty"`
+	} `yaml:",omitempty"`
+	Name string `yaml:"name,omitempty"`
+	Namespace string `yaml:"namespace,omitempty"`
+}
+
+type SourceBuildStrategy struct {
+	From *struct {
+		Kind string `yaml:"kind,omitempty"`
+		Name string `yaml:"name,omitempty"`
+		Namespace string `yaml:"namespace,omitempty"`
+	}
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
+type Template struct {
+	TypeMeta `yaml:",inline"`
+	ObjectMeta `yaml:"metadata"`
+
+	Objects []Object
+}
+
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
+type TypeMeta struct {
+	Kind string `yaml:"kind,omitempty"`
+	APIVersion string `yaml:"apiVersion,omitempty"`
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+type WebHookTrigger struct {}
 
 func main() {
-	templateYAML, err := ioutil.ReadFile(filepath.ToSlash("testdata/exported-openshift-template1.yml"))
+	contents, err := ioutil.ReadFile(filepath.Join("testdata", "exported-openshift-template.yml"))
 	if err != nil {
-		panic(err)
+		log.Fatalf("error: %v", err)
 	}
 
-	// Create a YAML serializer.  JSON is a subset of YAML, so is supported too.
-	s := json.NewYAMLSerializer(json.DefaultMetaFactory, scheme.Scheme,
-		scheme.Scheme)
-
-	// Decode the YAML to an object.
-	var template templatev1.Template
-	_, _, err = s.Decode(templateYAML, nil, &template)
+	template := Template{}
+	err = yaml.Unmarshal(contents, &template)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error: %v", err)
 	}
 
-	cleanedTemplateObjects := []runtime.RawExtension{}
+	template = cleanTemplateObjects(template)
 
-	// Some types, e.g. List, contain RawExtensions.  If the appropriate types
-	// are registered, these can be decoded in a second pass.
-	for i, o := range template.Objects {
-		o.Object, _, err = s.Decode(o.Raw, nil, nil)
-		if err != nil {
-			panic(err)
-		}
-		o.Raw = nil
-
-		// fmt.Printf("DEBUG o: %s\n", o)
-		// fmt.Printf("%T\n", o)
-		// fmt.Printf("%+v\n", o)
-		// fmt.Printf("DEBUG: %s\n", o.(metav1.TypeMeta).Kind)
-		// fmt.Printf("DEBUG: %s\n", o.(runtime.Object).Kind)
-		// fmt.Printf("DEBUG: %s\n", o.Object.(*corev1.Pod).Kind)
-		// break
-
-		switch v := o.Object.(type) {
-			case *buildv1.BuildConfig:
-				o.Object = cleanBuildConfig(o.Object.(*buildv1.BuildConfig))
-
-			// Builds will be recreated by the BuildConfig
-			case *buildv1.Build:
-				continue
-			// Pods will be recreated by the DeploymentConfig
-			case *corev1.Pod:
-				continue
-			case *corev1.ReplicationController:
-				continue
-
-			default:
-				log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %T", v))
-				continue
-		}
-		// template.Objects[i] = o
-		// TODO
-		_ = i
-		cleanedTemplateObjects = append(cleanedTemplateObjects, o)
-	}
-
-	template.Objects = cleanedTemplateObjects
-
-	// fmt.Printf("%#v\n", template)
-
-	// Encode the object to YAML.
-	err = s.Encode(&template, os.Stdout)
-	if err != nil {
-		panic(err)
-	}
-
-	// template = cleanTemplate(template)
+	marshaledTemplate, err := yaml.Marshal(&template)
+	fmt.Printf("--- template dump:\n%s\n", string(marshaledTemplate))
 }
 
-// func cleanTemplate(template templatev1.Template) templatev1.Template {
-// 	fmt.Printf("Type of template.Objects: %T", template.Objects)
+func cleanTemplateObjects(template Template) Template {
+	newTemplateObjects := []Object{}
 
-// 	for _, object := range template.Objects {
-// 		switch v := object.Object.(type) {
-// 		default:
-// 			fmt.Printf("unexpected type %T\n", v)
-// 		case *corev1.Pod:
-// 			fmt.Printf("DEBUG: type %T\n", v)
-// 		}
-// 	}
+	for _, object := range template.Objects {
+		objectKind := object.(map[interface {}]interface {})["kind"]
 
-// 	return template
-// }
+		// Is there a better way to do this? Seems hacky: marshaling, unmarshaling, and then replacing each object ...
+		switch objectKind {
+			case "BuildConfig":
+				marshaledBuildConfig, err := yaml.Marshal(&object)
+				if err != nil {
+					log.Fatalf("error: %v", err)
+				}
+				buildConfig := BuildConfig{}
+				if err := yaml.Unmarshal(marshaledBuildConfig, &buildConfig); err != nil {
+					log.Fatalf("error: %v", err)
+				}
+				newTemplateObjects = append(newTemplateObjects, buildConfig)
 
-func cleanBuildConfig(buildConfig *buildv1.BuildConfig) *buildv1.BuildConfig {
-	for _, trigger := range buildConfig.Spec.Triggers {
-		if trigger.Type == "Generic" {
-			// There's no way to actually modify trigger.GenericWebHook to remove the secret ...
-			fmt.Printf("DEBUG: %s\n", trigger.GenericWebHook.Secret)
-		} else if trigger.Type == "GitHub" {
-			fmt.Printf("DEBUG: %s\n", trigger.GitHubWebHook.Secret)
+			// Builds will be recreated by the BuildConfig
+			case "Build":
+				fallthrough
+			// Pods will be recreated by the DeploymentConfig
+			case "Pod":
+				fallthrough
+			case "ReplicationController":
+				// noop
+
+			default:
+				log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", objectKind))
 		}
 	}
 
-	return buildConfig
+	template.Objects = newTemplateObjects
+
+	return template
 }
