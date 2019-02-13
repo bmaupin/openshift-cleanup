@@ -1,0 +1,489 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: nodejs
+objects:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: appname
+      openshift.io/deployment.name: appname-2
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: appname-2-
+    labels:
+      app: appname
+      deployment: appname-2
+      deploymentconfig: appname
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: appname-2
+      uid: 02314d8f-2fb5-11e9-b2bb-005056836ad3
+  spec:
+    containers:
+    - env:
+      - name: NODE_ENV
+        value: development
+      image: docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+      imagePullPolicy: Always
+      name: appname
+      ports:
+      - containerPort: 3000
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        runAsUser: 1000700000
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-rbl8v
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-gvnlx
+    nodeName: dopenshift-pod1.openshift.example.org
+    nodeSelector:
+      node-role.kubernetes.io/compute: "true"
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000700000
+      seLinuxOptions:
+        level: s0:c26,c25
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - name: default-token-rbl8v
+      secret:
+        defaultMode: 420
+        secretName: default-token-rbl8v
+  status: {}
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2019-02-13 17:29:45 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2019-02-13 17:29:39 +0000 UTC
+      openshift.io/deployer-pod.name: appname-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: appname
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"appname","namespace":"playground","selfLink":"/apis/apps.openshift.io/v1/namespaces/playground/deploymentconfigs/appname","uid":"de9298fe-2fb4-11e9-b2bb-005056836ad3","resourceVersion":"32020557","generation":2,"creationTimestamp":"2019-02-13T17:29:08Z","labels":{"app":"appname"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["appname"],"from":{"kind":"ImageStreamTag","namespace":"playground","name":"appname:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203"}}],"replicas":1,"revisionHistoryLimit":10,"test":false,"selector":{"app":"appname","deploymentconfig":"appname"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"appname","deploymentconfig":"appname"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"containers":[{"name":"appname","image":"docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203","ports":[{"containerPort":3000,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2019-02-13T17:29:08Z","lastTransitionTime":"2019-02-13T17:29:08Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 3
+    labels:
+      app: appname
+      openshift.io/deployment-config.name: appname
+    name: appname-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: appname
+      uid: de9298fe-2fb4-11e9-b2bb-005056836ad3
+  spec:
+    replicas: 0
+    selector:
+      app: appname
+      deployment: appname-1
+      deploymentconfig: appname
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: appname
+          openshift.io/deployment.name: appname-1
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: appname
+          deployment: appname-1
+          deploymentconfig: appname
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+          imagePullPolicy: Always
+          name: appname
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2019-02-13 17:30:22 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2019-02-13 17:30:08 +0000 UTC
+      openshift.io/deployer-pod.name: appname-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: appname
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"appname","namespace":"playground","selfLink":"/apis/apps.openshift.io/v1/namespaces/playground/deploymentconfigs/appname","uid":"de9298fe-2fb4-11e9-b2bb-005056836ad3","resourceVersion":"32020688","generation":3,"creationTimestamp":"2019-02-13T17:29:08Z","labels":{"app":"appname"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["appname"],"from":{"kind":"ImageStreamTag","namespace":"playground","name":"appname:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203"}},{"type":"ConfigChange"}],"replicas":1,"revisionHistoryLimit":10,"test":false,"selector":{"app":"appname","deploymentconfig":"appname"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"appname","deploymentconfig":"appname"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"containers":[{"name":"appname","image":"docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203","ports":[{"containerPort":3000,"protocol":"TCP"}],"env":[{"name":"NODE_ENV","value":"development"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":2,"replicas":1,"updatedReplicas":1,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2019-02-13T17:29:45Z","lastTransitionTime":"2019-02-13T17:29:45Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2019-02-13T17:29:46Z","lastTransitionTime":"2019-02-13T17:29:46Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"appname-1\" successfully rolled out"}],"readyReplicas":1}}
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: appname
+      openshift.io/deployment-config.name: appname
+    name: appname-2
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: appname
+      uid: de9298fe-2fb4-11e9-b2bb-005056836ad3
+  spec:
+    replicas: 1
+    selector:
+      app: appname
+      deployment: appname-2
+      deploymentconfig: appname
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: appname
+          openshift.io/deployment.name: appname-2
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: appname
+          deployment: appname-2
+          deploymentconfig: appname
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            value: development
+          image: docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+          imagePullPolicy: Always
+          name: appname
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: appname
+    name: appname
+  spec:
+    ports:
+    - name: 3000-tcp
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: appname
+      deploymentconfig: appname
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 3
+    labels:
+      app: appname
+    name: appname
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: appname
+      deploymentconfig: appname
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: appname
+          deploymentconfig: appname
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            value: development
+          image: docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+          imagePullPolicy: Always
+          name: appname
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - appname
+        from:
+          kind: ImageStreamTag
+          name: appname:latest
+          namespace: playground
+        lastTriggeredImage: docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: appname
+    name: appname
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: appname:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        ref: master
+        uri: git@gitlab.com:some/repo.git
+      sourceSecret:
+        name: appname-at-gitlab
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: docker-node-oracle:8
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: 4QGadG31j15Imfx8mAg0
+      type: GitHub
+    - generic:
+        secret: -8v3CrdoEyT-7LaYEegh
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: build.openshift.io/v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: appname
+      openshift.io/build.number: "1"
+      openshift.io/build.pod-name: appname-1-build
+    creationTimestamp: null
+    labels:
+      app: appname
+      buildconfig: appname
+      openshift.io/build-config.name: appname
+      openshift.io/build.start-policy: Serial
+    name: appname-1
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: appname
+      uid: de8fdc15-2fb4-11e9-b2bb-005056836ad3
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-kz5wf
+      to:
+        kind: ImageStreamTag
+        name: appname:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: someuser@users.noreply.gitlab.com
+          name: someuser
+        commit: 428a6443ab457d6b07863e7e7177a9e1558e8f53
+        committer:
+          email: someuser@users.noreply.gitlab.com
+          name: someuser
+        message: Use relative paths in Dockerfile
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        ref: master
+        uri: git@gitlab.com:some/repo.git
+      sourceSecret:
+        name: appname-at-gitlab
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: DockerImage
+          name: collinestes/docker-node-oracle@sha256:51353d26d995fafde37f524162992b5e2cbd70585be88eb4647caddccbc196d7
+      type: Docker
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: docker-node-oracle:8
+        imageID: collinestes/docker-node-oracle@sha256:51353d26d995fafde37f524162992b5e2cbd70585be88eb4647caddccbc196d7
+      message: Image change
+  status:
+    config:
+      name: appname
+    output:
+      to:
+        imageDigest: sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+    outputDockerImageReference: docker-registry.default.svc:5000/playground/appname:latest
+    phase: New
+    stages:
+    - durationMilliseconds: 638
+      name: FetchInputs
+      startTime: 2019-02-13T17:29:12Z
+      steps:
+      - durationMilliseconds: 638
+        name: FetchGitSource
+        startTime: 2019-02-13T17:29:12Z
+    - durationMilliseconds: 15821
+      name: Build
+      startTime: 2019-02-13T17:29:15Z
+      steps:
+      - durationMilliseconds: 15821
+        name: DockerBuild
+        startTime: 2019-02-13T17:29:15Z
+    - durationMilliseconds: 7428
+      name: PushImage
+      startTime: 2019-02-13T17:29:31Z
+      steps:
+      - durationMilliseconds: 7428
+        name: PushDockerImage
+        startTime: 2019-02-13T17:29:31Z
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: appname
+    name: appname
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/playground/appname:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: appname
+    name: appname
+  spec:
+    host: appname-playground.openshift.example.org
+    port:
+      targetPort: 3000-tcp
+    to:
+      kind: Service
+      name: appname
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2019-02-13T17:29:42Z
+        status: "True"
+        type: Admitted
+      host: appname-playground.openshift.example.org
+      routerName: router
+      wildcardPolicy: None
