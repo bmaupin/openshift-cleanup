@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	_ "log"
 	"os"
+	"path/filepath"
 
 	appsv1 "github.com/openshift/api/apps/v1"
 	authorizationv1 "github.com/openshift/api/authorization/v1"
@@ -17,29 +20,10 @@ import (
 	templatev1 "github.com/openshift/api/template/v1"
 	userv1 "github.com/openshift/api/user/v1"
 
-	corev1 "k8s.io/api/core/v1"
+	// corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"k8s.io/client-go/kubernetes/scheme"
 )
-
-// yaml is an example YAML file.
-var yaml = []byte(`
-kind: List
-apiVersion: v1
-items:
-# a core Kubernetes object
-- kind: Pod
-  apiVersion: v1
-# a non-core Kubernetes object
-- kind: Job
-  apiVersion: batch/v1
-# a legacy OpenShift object
-- kind: Route
-  apiVersion: v1
-# a non-legacy OpenShift object
-- kind: Route
-  apiVersion: route.openshift.io/v1
-`)
 
 func init() {
 	// The Kubernetes Go client (nested within the OpenShift Go client)
@@ -77,33 +61,38 @@ func init() {
 }
 
 func main() {
+	templateYAML, err := ioutil.ReadFile(filepath.ToSlash("testdata/exported-openshift-template.yml"))
+	if err != nil {
+		panic(err)
+	}
+
 	// Create a YAML serializer.  JSON is a subset of YAML, so is supported too.
 	s := json.NewYAMLSerializer(json.DefaultMetaFactory, scheme.Scheme,
 		scheme.Scheme)
 
 	// Decode the YAML to an object.
-	var list corev1.List
-	_, _, err := s.Decode(yaml, nil, &list)
+	var template templatev1.Template
+	_, _, err = s.Decode(templateYAML, nil, &template)
 	if err != nil {
 		panic(err)
 	}
 
 	// Some types, e.g. List, contain RawExtensions.  If the appropriate types
 	// are registered, these can be decoded in a second pass.
-	for i, o := range list.Items {
+	for i, o := range template.Objects {
 		o.Object, _, err = s.Decode(o.Raw, nil, nil)
 		if err != nil {
 			panic(err)
 		}
 		o.Raw = nil
 
-		list.Items[i] = o
+		template.Objects[i] = o
 	}
 
-	fmt.Printf("%#v\n", list)
+	fmt.Printf("%#v\n", template)
 
 	// Encode the object to YAML.
-	err = s.Encode(&list, os.Stdout)
+	err = s.Encode(&template, os.Stdout)
 	if err != nil {
 		panic(err)
 	}
