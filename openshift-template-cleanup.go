@@ -9,12 +9,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// See here for more information on OpenShift/Kubernetes objects:
-// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
-// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/runtime/interfaces.go
-// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
-
 func main() {
+	// TODO
 	contents, err := ioutil.ReadFile(filepath.Join("testdata", "nodejs.yml"))
 	if err != nil {
 		panic(err)
@@ -26,11 +22,18 @@ func main() {
 		panic(err)
 	}
 
-	template = cleanMetadata(template)
-	template = cleanTemplateObjects(template)
+	template = cleanTemplate(template)
 
 	marshaledTemplate, err := yaml.Marshal(&template)
 	fmt.Printf("--- template dump:\n%s\n", string(marshaledTemplate))
+}
+
+// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
+func cleanTemplate(template map[interface{}]interface{}) map[interface{}]interface{} {
+	template = cleanMetadata(template)
+	template = cleanTemplateObjects(template)
+
+	return template
 }
 
 func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]interface{} {
@@ -146,6 +149,7 @@ func cleanTemplateObject(templateObject map[interface{}]interface{}) map[interfa
 	return templateObject
 }
 
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
 func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
 	metadata := openshiftObject["metadata"].(map[interface{}]interface{})
 
