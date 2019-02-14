@@ -81,42 +81,15 @@ func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface
 	buildConfigSpec := buildConfig["spec"].(map[interface{}]interface{})
 
 	// TODO: Verify this defaults to 5
-	if val, ok := buildConfigSpec["failedBuildsHistoryLimit"]; ok {
-		if val == 5 {
-			delete(buildConfigSpec, "failedBuildsHistoryLimit")
-		}
-	}
+	deleteKeyIfValueMatches(buildConfigSpec, "failedBuildsHistoryLimit", 5)
+	deleteKeyIfValueMatches(buildConfigSpec, "nodeSelector", nil)
 
-	if val, ok := buildConfigSpec["nodeSelector"]; ok {
-		if val == nil {
-			delete(buildConfigSpec, "nodeSelector")
-		}
-	}
+	deleteKeyIfEmpty(buildConfigSpec, "postCommit")
+	deleteKeyIfEmpty(buildConfigSpec, "resources")
 
-	if val, ok := buildConfigSpec["postCommit"]; ok {
-		if len(val.(map[interface{}]interface{})) == 0 {
-			delete(buildConfigSpec, "postCommit")
-		}
-	}
-
-	if val, ok := buildConfigSpec["resources"]; ok {
-		if len(val.(map[interface{}]interface{})) == 0 {
-			delete(buildConfigSpec, "resources")
-		}
-	}
-
-	if val, ok := buildConfigSpec["runPolicy"]; ok {
-		if val == "Serial" {
-			delete(buildConfigSpec, "runPolicy")
-		}
-	}
-
+	deleteKeyIfValueMatches(buildConfigSpec, "runPolicy", "Serial")
 	// TODO: Verify this defaults to 5
-	if val, ok := buildConfigSpec["successfulBuildsHistoryLimit"]; ok {
-		if val == 5 {
-			delete(buildConfigSpec, "successfulBuildsHistoryLimit")
-		}
-	}
+	deleteKeyIfValueMatches(buildConfigSpec, "successfulBuildsHistoryLimit", 5)
 
 	if val, ok := buildConfigSpec["triggers"]; ok {
 		buildConfigSpecTriggers := val.([]interface{})
@@ -153,12 +126,30 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 			}
 		}
 
-		if len(annotations) == 0 {
-			delete(metadata, "annotations")
-		}
+		deleteKeyIfEmpty(metadata, "annotations")
 	}
 
 	delete(metadata, "creationTimestamp")
 
 	return openshiftObject
+}
+
+func deleteKeyIfEmpty(mapObject map[interface{}]interface{}, keyToMatch string) map[interface{}]interface{} {
+	if val, ok := mapObject[keyToMatch]; ok {
+		if len(val.(map[interface{}]interface{})) == 0 {
+			delete(mapObject, keyToMatch)
+		}
+	}
+
+	return mapObject
+}
+
+func deleteKeyIfValueMatches(mapObject map[interface{}]interface{}, keyToMatch string, valueToMatch interface{}) map[interface{}]interface{} {
+	if val, ok := mapObject[keyToMatch]; ok {
+		if val == valueToMatch {
+			delete(mapObject, keyToMatch)
+		}
+	}
+
+	return mapObject
 }
