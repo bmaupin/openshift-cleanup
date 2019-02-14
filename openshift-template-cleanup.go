@@ -27,6 +27,7 @@ func main() {
 		panic(err)
 	}
 
+	template = cleanMetadata(template)
 	template = cleanTemplateObjects(template)
 
 	marshaledTemplate, err := yaml.Marshal(&template)
@@ -43,6 +44,7 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 		// TODO: handle DeploymentConfig, ImageStream, Route, Service, ...
 
 		case "BuildConfig":
+			object = cleanBuildConfig(object)
 			newTemplateObjects = append(newTemplateObjects, object)
 
 		// Builds will be recreated by the BuildConfig
@@ -63,4 +65,100 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 	template["objects"] = newTemplateObjects
 
 	return template
+}
+
+func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
+	buildConfig = cleanTemplateObject(buildConfig)
+	buildConfig = cleanBuildConfigSpec(buildConfig)
+
+	// TODO: Verify that this is optional :)
+	delete(buildConfig, "status")
+
+	return buildConfig
+}
+
+func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
+	buildConfigSpec := buildConfig["spec"].(map[interface{}]interface{})
+
+	// TODO: Verify this defaults to 5
+	if val, ok := buildConfigSpec["failedBuildsHistoryLimit"]; ok {
+		if val == 5 {
+			delete(buildConfigSpec, "failedBuildsHistoryLimit")
+		}
+	}
+
+	if val, ok := buildConfigSpec["nodeSelector"]; ok {
+		if val == nil {
+			delete(buildConfigSpec, "nodeSelector")
+		}
+	}
+
+	if val, ok := buildConfigSpec["postCommit"]; ok {
+		if len(val.(map[interface{}]interface{})) == 0 {
+			delete(buildConfigSpec, "postCommit")
+		}
+	}
+
+	if val, ok := buildConfigSpec["resources"]; ok {
+		if len(val.(map[interface{}]interface{})) == 0 {
+			delete(buildConfigSpec, "resources")
+		}
+	}
+
+	if val, ok := buildConfigSpec["runPolicy"]; ok {
+		if val == "Serial" {
+			delete(buildConfigSpec, "runPolicy")
+		}
+	}
+
+	// TODO: Verify this defaults to 5
+	if val, ok := buildConfigSpec["successfulBuildsHistoryLimit"]; ok {
+		if val == 5 {
+			delete(buildConfigSpec, "successfulBuildsHistoryLimit")
+		}
+	}
+
+	if val, ok := buildConfigSpec["triggers"]; ok {
+		buildConfigSpecTriggers := val.([]interface{})
+
+		for _, trigger := range buildConfigSpecTriggers {
+			trigger := trigger.(map[interface{}]interface{})
+
+			if val, ok := trigger["generic"]; ok {
+				delete(val.(map[interface{}]interface{}), "secret")
+			} else if val, ok := trigger["github"]; ok {
+				delete(val.(map[interface{}]interface{}), "secret")
+			}
+		}
+	}
+
+	return buildConfig
+}
+
+func cleanTemplateObject(templateObject map[interface{}]interface{}) map[interface{}]interface{} {
+	templateObject = cleanMetadata(templateObject)
+
+	return templateObject
+}
+
+func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
+	metadata := openshiftObject["metadata"].(map[interface{}]interface{})
+
+	if val, ok := metadata["annotations"]; ok {
+		annotations := val.(map[interface{}]interface{})
+
+		for annotation, _ := range annotations {
+			if annotation == "openshift.io/generated-by" {
+				delete(annotations, "openshift.io/generated-by")
+			}
+		}
+
+		if len(annotations) == 0 {
+			delete(metadata, "annotations")
+		}
+	}
+
+	delete(metadata, "creationTimestamp")
+
+	return openshiftObject
 }
