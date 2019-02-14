@@ -133,7 +133,6 @@ func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[int
 }
 
 func cleanDeploymentConfigSpec(deploymentConfigSpec map[interface{}]interface{}) map[interface{}]interface{} {
-	// TODO: Verify this is the default
 	deleteKeyIfValueMatches(deploymentConfigSpec, "revisionHistoryLimit", 10)
 
 	deploymentStrategy := deploymentConfigSpec["strategy"].(map[interface{}]interface{})
@@ -142,7 +141,6 @@ func cleanDeploymentConfigSpec(deploymentConfigSpec map[interface{}]interface{})
 	deploymentTemplate := deploymentConfigSpec["template"].(map[interface{}]interface{})
 	deploymentTemplate = cleanDeploymentTemplate(deploymentTemplate)
 
-	// TODO: Verify this is the default
 	deleteKeyIfValueMatches(deploymentConfigSpec, "test", false)
 
 	deploymentTriggers := deploymentConfigSpec["triggers"].([]interface{})
@@ -155,13 +153,11 @@ func cleanDeploymentConfigSpec(deploymentConfigSpec map[interface{}]interface{})
 }
 
 func cleanDeploymentStrategy(deploymentStrategy map[interface{}]interface{}) map[interface{}]interface{} {
-	// TODO: Verify this is the default
 	deleteKeyIfValueMatches(deploymentStrategy, "activeDeadlineSeconds", 21600)
 	deleteKeyIfEmpty(deploymentStrategy, "resources")
 
 	if val, ok := deploymentStrategy["rollingParams"]; ok {
 		rollingParams := val.(map[interface{}]interface{})
-		// TODO: Verify all of these are the default
 		deleteKeyIfValueMatches(rollingParams, "intervalSeconds", 1)
 		deleteKeyIfValueMatches(rollingParams, "maxSurge", "25%")
 		deleteKeyIfValueMatches(rollingParams, "maxUnavailable", "25%")
@@ -198,8 +194,6 @@ func cleanPodSpec(podSpec map[interface{}]interface{}) map[interface{}]interface
 }
 
 func cleanContainer(container map[interface{}]interface{}) map[interface{}]interface{} {
-	// TODO: Verify this is the default
-	deleteKeyIfValueMatches(container, "imagePullPolicy", "Always")
 	deleteKeyIfEmpty(container, "resources")
 	deleteKeyIfValueMatches(container, "terminationMessagePath", "/dev/termination-log")
 	deleteKeyIfValueMatches(container, "terminationMessagePolicy", "File")
@@ -210,8 +204,6 @@ func cleanContainer(container map[interface{}]interface{}) map[interface{}]inter
 func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[interface{}]interface{} {
 	if val, ok := deploymentTrigger["imageChangeParams"]; ok {
 		imageChangeParams := val.(map[interface{}]interface{})
-		// TODO: Verify this is the default
-		deleteKeyIfValueMatches(imageChangeParams, "automatic", true)
 		delete(imageChangeParams, "lastTriggeredImage")
 	}
 
