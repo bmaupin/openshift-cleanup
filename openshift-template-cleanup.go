@@ -40,14 +40,14 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 		object := object.(map[interface{}]interface{})
 
 		switch object["kind"] {
-		// TODO: handle DeploymentConfig, ImageStream, Route, Service, ...
-
 		case "BuildConfig":
 			object = cleanBuildConfig(object)
 			newTemplateObjects = append(newTemplateObjects, object)
 		case "ImageStream":
 			object = cleanImageStream(object)
 			newTemplateObjects = append(newTemplateObjects, object)
+
+		// TODO: handle DeploymentConfig, Route, Service, ...
 
 		// Builds will be recreated by the BuildConfig
 		case "Build":
@@ -127,28 +127,9 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 	}
 	deleteKeyIfEmpty(imageStreamSpec, "lookupPolicy")
 
-	if val, ok := imageStreamSpec["tags"]; ok {
-		tagReferences := val.([]interface{})
-
-		for _, tagReference := range tagReferences {
-			tagReference := tagReference.(map[interface{}]interface{})
-
-			// TODO: Verify that this is optional
-			deleteKeyIfValueMatches(tagReference, "annotations", nil)
-			// TODO: Verify that this is optional
-			deleteKeyIfValueMatches(tagReference, "generation", nil)
-			deleteKeyIfEmpty(tagReference, "importPolicy")
-
-			if val, ok := tagReference["referencePolicy"]; ok {
-				tagReferencePolicy := val.(map[interface{}]interface{})
-
-				// TODO: Verify that this is optional
-				deleteKeyIfValueMatches(tagReferencePolicy, "type", "")
-
-				deleteKeyIfEmpty(tagReference, "referencePolicy")
-			}
-		}
-	}
+	// Tags seem to be ignored and recreated by the server
+	delete(imageStreamSpec, "tags")
+	deleteKeyIfEmpty(imageStream, "spec")
 
 	if val, ok := imageStream["status"]; ok {
 		imageStreamStatus := val.(map[interface{}]interface{})
