@@ -71,7 +71,6 @@ func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]i
 	buildConfig = cleanTemplateObject(buildConfig)
 	buildConfig = cleanBuildConfigSpec(buildConfig)
 
-	// TODO: Verify that this is optional :)
 	delete(buildConfig, "status")
 
 	return buildConfig
@@ -80,7 +79,6 @@ func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]i
 func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
 	buildConfigSpec := buildConfig["spec"].(map[interface{}]interface{})
 
-	// TODO: Verify this defaults to 5
 	deleteKeyIfValueMatches(buildConfigSpec, "failedBuildsHistoryLimit", 5)
 	deleteKeyIfValueMatches(buildConfigSpec, "nodeSelector", nil)
 
@@ -88,22 +86,26 @@ func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface
 	deleteKeyIfEmpty(buildConfigSpec, "resources")
 
 	deleteKeyIfValueMatches(buildConfigSpec, "runPolicy", "Serial")
-	// TODO: Verify this defaults to 5
 	deleteKeyIfValueMatches(buildConfigSpec, "successfulBuildsHistoryLimit", 5)
 
-	if val, ok := buildConfigSpec["triggers"]; ok {
-		buildConfigSpecTriggers := val.([]interface{})
+	/*
+	 * TODO: Generic/Github triggers cannot be specified without secrets
+	 * - Templatize with randomly generated secret?
+	 * - Replace with SecretReference?
+	 */
+	// if val, ok := buildConfigSpec["triggers"]; ok {
+	// 	buildConfigSpecTriggers := val.([]interface{})
 
-		for _, trigger := range buildConfigSpecTriggers {
-			trigger := trigger.(map[interface{}]interface{})
+	// 	for _, trigger := range buildConfigSpecTriggers {
+	// 		trigger := trigger.(map[interface{}]interface{})
 
-			if val, ok := trigger["generic"]; ok {
-				delete(val.(map[interface{}]interface{}), "secret")
-			} else if val, ok := trigger["github"]; ok {
-				delete(val.(map[interface{}]interface{}), "secret")
-			}
-		}
-	}
+	// 		if val, ok := trigger["generic"]; ok {
+	// 			delete(val.(map[interface{}]interface{}), "secret")
+	// 		} else if val, ok := trigger["github"]; ok {
+	// 			delete(val.(map[interface{}]interface{}), "secret")
+	// 		}
+	// 	}
+	// }
 
 	return buildConfig
 }
