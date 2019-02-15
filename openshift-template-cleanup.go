@@ -241,13 +241,17 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 
 		for _, tagReference := range tagReferences {
 			tagReference := tagReference.(map[interface{}]interface{})
+
+			cleanAnnotations(tagReference["annotations"].(map[interface{}]interface{}))
+			deleteKeyIfEmpty(tagReference, "annotations")
 			deleteKeyIfValueMatches(tagReference, "annotations", nil)
-			deleteKeyIfValueMatches(tagReference, "generation", nil)
+			delete(tagReference, "generation")
 			deleteKeyIfEmpty(tagReference, "importPolicy")
 
 			if val, ok := tagReference["referencePolicy"]; ok {
 				tagReferencePolicy := val.(map[interface{}]interface{})
 				deleteKeyIfValueMatches(tagReferencePolicy, "type", "")
+				deleteKeyIfValueMatches(tagReferencePolicy, "type", "Source")
 				deleteKeyIfEmpty(tagReference, "referencePolicy")
 			}
 		}
@@ -293,16 +297,7 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 	metadata := openshiftObject["metadata"].(map[interface{}]interface{})
 
 	if val, ok := metadata["annotations"]; ok {
-		annotations := val.(map[interface{}]interface{})
-
-		for annotation, _ := range annotations {
-			if annotation == "openshift.io/generated-by" {
-				delete(annotations, "openshift.io/generated-by")
-			} else if annotation == "openshift.io/host.generated" {
-				delete(annotations, "openshift.io/host.generated")
-			}
-		}
-
+		cleanAnnotations(val.(map[interface{}]interface{}))
 		deleteKeyIfEmpty(metadata, "annotations")
 	}
 
@@ -311,6 +306,21 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 	delete(metadata, "generation")
 
 	return openshiftObject
+}
+
+func cleanAnnotations(annotations map[interface{}]interface{}) map[interface{}]interface{} {
+	annotationsToDelete := []string{
+		"openshift.io/generated-by",
+		"openshift.io/host.generated",
+		"openshift.io/image.dockerRepositoryCheck",
+		"openshift.io/imported-from",
+	}
+
+	for _, annotationToDelete := range annotationsToDelete {
+		delete(annotations, annotationToDelete)
+	}
+
+	return annotations
 }
 
 func deleteKeyIfEmpty(mapObject map[interface{}]interface{}, keyToMatch string) map[interface{}]interface{} {
