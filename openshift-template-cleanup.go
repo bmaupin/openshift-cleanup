@@ -4,14 +4,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 
 	"gopkg.in/yaml.v2"
 )
 
+var usage = fmt.Sprintf("Usage: %s TEMPLATE_FILE", filepath.Base(os.Args[0]))
+
 func main() {
-	// TODO
-	contents, err := ioutil.ReadFile(filepath.Join("testdata", "exported-openshift-template1.yml"))
+	if len(os.Args) < 2 {
+		fmt.Println("ERROR: Template file is required")
+		fmt.Println(usage)
+		os.Exit(1)
+	}
+
+	contents, err := ioutil.ReadFile(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
