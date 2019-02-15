@@ -236,9 +236,22 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 	}
 	deleteKeyIfEmpty(imageStreamSpec, "lookupPolicy")
 
-	// Tags seem to be ignored and recreated by the server
-	delete(imageStreamSpec, "tags")
-	deleteKeyIfEmpty(imageStream, "spec")
+	if val, ok := imageStreamSpec["tags"]; ok {
+		tagReferences := val.([]interface{})
+
+		for _, tagReference := range tagReferences {
+			tagReference := tagReference.(map[interface{}]interface{})
+			deleteKeyIfValueMatches(tagReference, "annotations", nil)
+			deleteKeyIfValueMatches(tagReference, "generation", nil)
+			deleteKeyIfEmpty(tagReference, "importPolicy")
+
+			if val, ok := tagReference["referencePolicy"]; ok {
+				tagReferencePolicy := val.(map[interface{}]interface{})
+				deleteKeyIfValueMatches(tagReferencePolicy, "type", "")
+				deleteKeyIfEmpty(tagReference, "referencePolicy")
+			}
+		}
+	}
 
 	return imageStream
 }
