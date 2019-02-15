@@ -52,8 +52,12 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 		case "ImageStream":
 			object = cleanImageStream(object)
 			newTemplateObjects = append(newTemplateObjects, object)
-
-		// TODO: handle Route, Service, ...
+		case "Route":
+			object = cleanRoute(object)
+			newTemplateObjects = append(newTemplateObjects, object)
+		case "Service":
+			object = cleanService(object)
+			newTemplateObjects = append(newTemplateObjects, object)
 
 		// Builds will be recreated by the BuildConfig
 		case "Build":
@@ -75,7 +79,7 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 	return template
 }
 
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-buildconfig
 func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
 	buildConfig = cleanTemplateObject(buildConfig)
 	buildConfig = cleanBuildConfigSpec(buildConfig)
@@ -85,7 +89,7 @@ func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]i
 	return buildConfig
 }
 
-// https://github.com/openshift/origin/blob/master/pkg/build/apis/build/types.go
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-buildconfigspec
 func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
 	buildConfigSpec := buildConfig["spec"].(map[interface{}]interface{})
 
@@ -121,6 +125,7 @@ func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface
 	return buildConfig
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentconfig
 func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[interface{}]interface{} {
 	deploymentConfig = cleanTemplateObject(deploymentConfig)
 	deploymentConfigSpec := deploymentConfig["spec"].(map[interface{}]interface{})
@@ -132,6 +137,7 @@ func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[int
 	return deploymentConfig
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentconfigspec
 func cleanDeploymentConfigSpec(deploymentConfigSpec map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfValueMatches(deploymentConfigSpec, "revisionHistoryLimit", 10)
 
@@ -152,6 +158,7 @@ func cleanDeploymentConfigSpec(deploymentConfigSpec map[interface{}]interface{})
 	return deploymentConfigSpec
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentstrategy
 func cleanDeploymentStrategy(deploymentStrategy map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfValueMatches(deploymentStrategy, "activeDeadlineSeconds", 21600)
 	deleteKeyIfEmpty(deploymentStrategy, "resources")
@@ -169,6 +176,7 @@ func cleanDeploymentStrategy(deploymentStrategy map[interface{}]interface{}) map
 	return deploymentStrategy
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-podtemplatespec
 func cleanDeploymentTemplate(deploymentTemplate map[interface{}]interface{}) map[interface{}]interface{} {
 	deploymentTemplate = cleanMetadata(deploymentTemplate)
 	podSpec := deploymentTemplate["spec"].(map[interface{}]interface{})
@@ -177,6 +185,7 @@ func cleanDeploymentTemplate(deploymentTemplate map[interface{}]interface{}) map
 	return deploymentTemplate
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-podspec
 func cleanPodSpec(podSpec map[interface{}]interface{}) map[interface{}]interface{} {
 	containers := podSpec["containers"].([]interface{})
 	for _, container := range containers {
@@ -193,6 +202,7 @@ func cleanPodSpec(podSpec map[interface{}]interface{}) map[interface{}]interface
 	return podSpec
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-container
 func cleanContainer(container map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfEmpty(container, "resources")
 	deleteKeyIfValueMatches(container, "terminationMessagePath", "/dev/termination-log")
@@ -201,6 +211,7 @@ func cleanContainer(container map[interface{}]interface{}) map[interface{}]inter
 	return container
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymenttriggerpolicy
 func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[interface{}]interface{} {
 	if val, ok := deploymentTrigger["imageChangeParams"]; ok {
 		imageChangeParams := val.(map[interface{}]interface{})
@@ -210,7 +221,7 @@ func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[i
 	return deploymentTrigger
 }
 
-// https://github.com/openshift/origin/blob/master/pkg/image/apis/image/types.go
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-imagestream
 func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]interface{} {
 	imageStream = cleanTemplateObject(imageStream)
 
@@ -230,6 +241,35 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 	return imageStream
 }
 
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-route
+func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
+	route = cleanTemplateObject(route)
+
+	routeSpec := route["spec"].(map[interface{}]interface{})
+	routeSpecTo := routeSpec["to"].(map[interface{}]interface{})
+	deleteKeyIfValueMatches(routeSpecTo, "weight", 100)
+	deleteKeyIfValueMatches(routeSpec, "wildcardPolicy", "None")
+
+	// TODO: make sure this is optional
+	delete(route, "status")
+
+	return route
+}
+
+// https://kubernetes.io/docs/reference/federation/v1/definitions/#_v1_service
+func cleanService(service map[interface{}]interface{}) map[interface{}]interface{} {
+	service = cleanTemplateObject(service)
+
+	serviceSpec := service["spec"].(map[interface{}]interface{})
+	deleteKeyIfValueMatches(serviceSpec, "sessionAffinity", "None")
+	deleteKeyIfValueMatches(serviceSpec, "type", "ClusterIP")
+
+	// "Populated by the system. Read-only."
+	delete(service, "status")
+
+	return service
+}
+
 func cleanTemplateObject(templateObject map[interface{}]interface{}) map[interface{}]interface{} {
 	templateObject = cleanMetadata(templateObject)
 
@@ -246,6 +286,8 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 		for annotation, _ := range annotations {
 			if annotation == "openshift.io/generated-by" {
 				delete(annotations, "openshift.io/generated-by")
+			} else if annotation == "openshift.io/host.generated" {
+				delete(annotations, "openshift.io/host.generated")
 			}
 		}
 
