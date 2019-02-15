@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// TODO
-	contents, err := ioutil.ReadFile(filepath.Join("testdata", "nodejs.yml"))
+	contents, err := ioutil.ReadFile(filepath.Join("testdata", "exported-openshift-template1.yml"))
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +25,7 @@ func main() {
 	template = cleanTemplate(template)
 
 	marshaledTemplate, err := yaml.Marshal(&template)
-	fmt.Printf("--- template dump:\n%s\n", string(marshaledTemplate))
+	fmt.Print(string(marshaledTemplate))
 }
 
 // https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
@@ -70,7 +70,7 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 
 		default:
 			log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", object["kind"]))
-			continue
+			newTemplateObjects = append(newTemplateObjects, object)
 		}
 	}
 
@@ -83,8 +83,6 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
 	buildConfig = cleanTemplateObject(buildConfig)
 	buildConfig = cleanBuildConfigSpec(buildConfig)
-
-	delete(buildConfig, "status")
 
 	return buildConfig
 }
@@ -130,9 +128,6 @@ func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[int
 	deploymentConfig = cleanTemplateObject(deploymentConfig)
 	deploymentConfigSpec := deploymentConfig["spec"].(map[interface{}]interface{})
 	deploymentConfigSpec = cleanDeploymentConfigSpec(deploymentConfigSpec)
-
-	// TODO: Could we just delete the status from all template objects?
-	delete(deploymentConfig, "status")
 
 	return deploymentConfig
 }
@@ -236,7 +231,6 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 	// Tags seem to be ignored and recreated by the server
 	delete(imageStreamSpec, "tags")
 	deleteKeyIfEmpty(imageStream, "spec")
-	delete(imageStream, "status")
 
 	return imageStream
 }
@@ -250,9 +244,6 @@ func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfValueMatches(routeSpecTo, "weight", 100)
 	deleteKeyIfValueMatches(routeSpec, "wildcardPolicy", "None")
 
-	// TODO: make sure this is optional
-	delete(route, "status")
-
 	return route
 }
 
@@ -264,14 +255,14 @@ func cleanService(service map[interface{}]interface{}) map[interface{}]interface
 	deleteKeyIfValueMatches(serviceSpec, "sessionAffinity", "None")
 	deleteKeyIfValueMatches(serviceSpec, "type", "ClusterIP")
 
-	// "Populated by the system. Read-only."
-	delete(service, "status")
-
 	return service
 }
 
 func cleanTemplateObject(templateObject map[interface{}]interface{}) map[interface{}]interface{} {
 	templateObject = cleanMetadata(templateObject)
+
+	// Status properties across different objects are populated by the server
+	delete(templateObject, "status")
 
 	return templateObject
 }
