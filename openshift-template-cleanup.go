@@ -10,11 +10,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var usage = fmt.Sprintf("Usage: %s TEMPLATE_FILE", filepath.Base(os.Args[0]))
+var usage = fmt.Sprintf("Usage: %s OPENSHIFT_YAML_FILE", filepath.Base(os.Args[0]))
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("ERROR: Template file is required")
+		fmt.Println("ERROR: OpenShift YAML file is required")
 		fmt.Println(usage)
 		os.Exit(1)
 	}
@@ -24,48 +24,52 @@ func main() {
 		panic(err)
 	}
 
-	template := make(map[interface{}]interface{})
-	err = yaml.Unmarshal(contents, &template)
+	unmarshaledConfig := make(map[interface{}]interface{})
+	err = yaml.Unmarshal(contents, &unmarshaledConfig)
 	if err != nil {
 		panic(err)
 	}
 
-	template = cleanTemplate(template)
+	unmarshaledConfig = cleanOpenshiftConfig(unmarshaledConfig)
 
-	marshaledTemplate, err := yaml.Marshal(&template)
-	fmt.Print(string(marshaledTemplate))
+	marshaledConfig, err := yaml.Marshal(&unmarshaledConfig)
+	fmt.Print(string(marshaledConfig))
 }
 
-// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
-func cleanTemplate(template map[interface{}]interface{}) map[interface{}]interface{} {
-	template = cleanMetadata(template)
-	template = cleanTemplateObjects(template)
+func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[interface{}]interface{} {
+	openshiftConfig = cleanMetadata(openshiftConfig)
 
-	return template
-}
+	var listKey string
+	var newChildObjects []interface{}
 
-func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]interface{} {
-	var newTemplateObjects []interface{}
+	switch openshiftConfig["kind"] {
+	// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-listmeta
+	case "List":
+		listKey = "items"
+	// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
+	case "Template":
+		listKey = "objects"
+	}
 
-	for _, object := range template["objects"].([]interface{}) {
+	for _, object := range openshiftConfig[listKey].([]interface{}) {
 		object := object.(map[interface{}]interface{})
 
 		switch object["kind"] {
 		case "BuildConfig":
 			object = cleanBuildConfig(object)
-			newTemplateObjects = append(newTemplateObjects, object)
+			newChildObjects = append(newChildObjects, object)
 		case "DeploymentConfig":
 			object = cleanDeploymentConfig(object)
-			newTemplateObjects = append(newTemplateObjects, object)
+			newChildObjects = append(newChildObjects, object)
 		case "ImageStream":
 			object = cleanImageStream(object)
-			newTemplateObjects = append(newTemplateObjects, object)
+			newChildObjects = append(newChildObjects, object)
 		case "Route":
 			object = cleanRoute(object)
-			newTemplateObjects = append(newTemplateObjects, object)
+			newChildObjects = append(newChildObjects, object)
 		case "Service":
 			object = cleanService(object)
-			newTemplateObjects = append(newTemplateObjects, object)
+			newChildObjects = append(newChildObjects, object)
 
 		// Builds will be recreated by the BuildConfig
 		case "Build":
@@ -78,18 +82,18 @@ func cleanTemplateObjects(template map[interface{}]interface{}) map[interface{}]
 
 		default:
 			log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", object["kind"]))
-			newTemplateObjects = append(newTemplateObjects, object)
+			newChildObjects = append(newChildObjects, object)
 		}
 	}
 
-	template["objects"] = newTemplateObjects
+	openshiftConfig[listKey] = newChildObjects
 
-	return template
+	return openshiftConfig
 }
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-buildconfig
 func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	buildConfig = cleanTemplateObject(buildConfig)
+	buildConfig = cleanOpenshiftObject(buildConfig)
 	buildConfig = cleanBuildConfigSpec(buildConfig)
 
 	return buildConfig
@@ -133,7 +137,7 @@ func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentconfig
 func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	deploymentConfig = cleanTemplateObject(deploymentConfig)
+	deploymentConfig = cleanOpenshiftObject(deploymentConfig)
 	deploymentConfigSpec := deploymentConfig["spec"].(map[interface{}]interface{})
 	deploymentConfigSpec = cleanDeploymentConfigSpec(deploymentConfigSpec)
 
@@ -226,7 +230,7 @@ func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[i
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-imagestream
 func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]interface{} {
-	imageStream = cleanTemplateObject(imageStream)
+	imageStream = cleanOpenshiftObject(imageStream)
 
 	imageStreamSpec := imageStream["spec"].(map[interface{}]interface{})
 
@@ -262,7 +266,7 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-route
 func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
-	route = cleanTemplateObject(route)
+	route = cleanOpenshiftObject(route)
 
 	routeSpec := route["spec"].(map[interface{}]interface{})
 	routeSpecTo := routeSpec["to"].(map[interface{}]interface{})
@@ -274,7 +278,7 @@ func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
 
 // https://kubernetes.io/docs/reference/federation/v1/definitions/#_v1_service
 func cleanService(service map[interface{}]interface{}) map[interface{}]interface{} {
-	service = cleanTemplateObject(service)
+	service = cleanOpenshiftObject(service)
 
 	serviceSpec := service["spec"].(map[interface{}]interface{})
 	deleteKeyIfValueMatches(serviceSpec, "sessionAffinity", "None")
@@ -283,13 +287,13 @@ func cleanService(service map[interface{}]interface{}) map[interface{}]interface
 	return service
 }
 
-func cleanTemplateObject(templateObject map[interface{}]interface{}) map[interface{}]interface{} {
-	templateObject = cleanMetadata(templateObject)
+func cleanOpenshiftObject(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
+	openshiftObject = cleanMetadata(openshiftObject)
 
 	// Status properties across different objects are populated by the server
-	delete(templateObject, "status")
+	delete(openshiftObject, "status")
 
-	return templateObject
+	return openshiftObject
 }
 
 // https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
@@ -304,6 +308,12 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 	delete(metadata, "creationTimestamp")
 	// "Populated by the system. Read-only."
 	delete(metadata, "generation")
+	// "Populated by the system. Read-only."
+	delete(metadata, "resourceVersion")
+	// "Populated by the system. Read-only."
+	delete(metadata, "selfLink")
+
+	deleteKeyIfEmpty(openshiftObject, "metadata")
 
 	return openshiftObject
 }
