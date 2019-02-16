@@ -246,8 +246,10 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 		for _, tagReference := range tagReferences {
 			tagReference := tagReference.(map[interface{}]interface{})
 
-			cleanAnnotations(tagReference["annotations"].(map[interface{}]interface{}))
-			deleteKeyIfEmpty(tagReference, "annotations")
+			if tagReference["annotations"] != nil {
+				cleanAnnotations(tagReference["annotations"].(map[interface{}]interface{}))
+				deleteKeyIfEmpty(tagReference, "annotations")
+			}
 			deleteKeyIfValueMatches(tagReference, "annotations", nil)
 			delete(tagReference, "generation")
 			deleteKeyIfEmpty(tagReference, "importPolicy")
