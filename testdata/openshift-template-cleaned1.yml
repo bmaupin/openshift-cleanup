@@ -1,0 +1,119 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: nodejs
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: appname
+    name: appname
+  spec:
+    ports:
+    - name: 3000-tcp
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: appname
+      deploymentconfig: appname
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: appname
+    name: appname
+  spec:
+    replicas: 1
+    selector:
+      app: appname
+      deploymentconfig: appname
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: appname
+          deploymentconfig: appname
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            value: development
+          image: docker-registry.default.svc:5000/playground/appname@sha256:47130384c5cb6359d232d7fdb0d0d2926586a9d8b02668a9c4f0a881f39e7203
+          imagePullPolicy: Always
+          name: appname
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - appname
+        from:
+          kind: ImageStreamTag
+          name: appname:latest
+          namespace: playground
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: appname
+    name: appname
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: appname:latest
+    source:
+      git:
+        ref: master
+        uri: git@gitlab.com:some/repo.git
+      sourceSecret:
+        name: appname-at-gitlab
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: docker-node-oracle:8
+      type: Docker
+    triggers:
+    - github:
+        secret: 4QGadG31j15Imfx8mAg0
+      type: GitHub
+    - generic:
+        secret: -8v3CrdoEyT-7LaYEegh
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: appname
+    name: appname
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/playground/appname:latest
+      name: latest
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: appname
+    name: appname
+  spec:
+    host: appname-playground.openshift.example.org
+    port:
+      targetPort: 3000-tcp
+    to:
+      kind: Service
+      name: appname

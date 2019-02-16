@@ -1,0 +1,73 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: node-openshift-test
+    name: node-openshift-test
+    namespace: playground
+    uid: 760c701a-315c-11e9-b2bb-005056836ad3
+  spec:
+    clusterIP: 172.30.10.188
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: node-openshift-test
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: node-openshift-test
+    name: node-openshift-test
+    namespace: playground
+    uid: 760b70f4-315c-11e9-b2bb-005056836ad3
+  spec:
+    replicas: 1
+    selector:
+      app: node-openshift-test
+      deploymentconfig: node-openshift-test
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: node-openshift-test
+          deploymentconfig: node-openshift-test
+      spec:
+        containers:
+        - image: registry.example.org/node-openshift-test@sha256:f36675b547a8e67dd91cb1c5be3107473a8722b5e276a8d617b31cd20828e99b
+          imagePullPolicy: Always
+          name: node-openshift-test
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - node-openshift-test
+        from:
+          kind: ImageStreamTag
+          name: node-openshift-test:latest
+          namespace: playground
+      type: ImageChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: node-openshift-test
+    name: node-openshift-test
+    namespace: playground
+    uid: 760b46ec-315c-11e9-b2bb-005056836ad3
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: registry.example.org/node-openshift-test
+      name: latest
+kind: List

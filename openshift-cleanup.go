@@ -19,7 +19,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	contents, err := ioutil.ReadFile(os.Args[1])
+	fmt.Print(string(cleanOpenshiftConfigFile(os.Args[1])))
+}
+
+func cleanOpenshiftConfigFile(openshiftConfigFilePath string) []byte {
+	contents, err := ioutil.ReadFile(openshiftConfigFilePath)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +37,10 @@ func main() {
 	unmarshaledConfig = cleanOpenshiftConfig(unmarshaledConfig)
 
 	marshaledConfig, err := yaml.Marshal(&unmarshaledConfig)
-	fmt.Print(string(marshaledConfig))
+	if err != nil {
+		panic(err)
+	}
+	return marshaledConfig
 }
 
 func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[interface{}]interface{} {
