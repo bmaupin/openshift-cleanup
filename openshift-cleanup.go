@@ -298,6 +298,8 @@ func cleanService(service map[interface{}]interface{}) map[interface{}]interface
 	service = cleanOpenshiftObject(service)
 
 	serviceSpec := service["spec"].(map[interface{}]interface{})
+	// This is usually assigned randomly by the master
+	delete(serviceSpec, "clusterIP")
 
 	// ports is an optional parameter
 	if val, ok := serviceSpec["ports"]; ok {
@@ -334,10 +336,14 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 	delete(metadata, "creationTimestamp")
 	// "Populated by the system. Read-only."
 	delete(metadata, "generation")
+	// Namespace can be removed because it can be specified via a parameter to oc create
+	delete(metadata, "namespace")
 	// "Populated by the system. Read-only."
 	delete(metadata, "resourceVersion")
 	// "Populated by the system. Read-only."
 	delete(metadata, "selfLink")
+	// "Populated by the system. Read-only."
+	delete(metadata, "uid")
 
 	deleteKeyIfEmpty(openshiftObject, "metadata")
 

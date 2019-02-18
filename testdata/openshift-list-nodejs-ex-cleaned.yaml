@@ -6,10 +6,7 @@ items:
     labels:
       app: nodejs-ex
     name: nodejs-ex
-    namespace: playground
-    uid: 0b6f6818-3386-11e9-86f9-005056836ad3
   spec:
-    clusterIP: 172.30.206.245
     ports:
     - name: 8080-tcp
       port: 8080
@@ -22,8 +19,6 @@ items:
     labels:
       app: nodejs-ex
     name: nodejs-ex
-    namespace: playground
-    uid: 0b6d5a31-3386-11e9-86f9-005056836ad3
   spec:
     replicas: 1
     selector:
@@ -59,8 +54,6 @@ items:
     labels:
       app: nodejs-ex
     name: nodejs-ex
-    namespace: playground
-    uid: 0b6fbe6a-3386-11e9-86f9-005056836ad3
   spec:
     output:
       to:
@@ -95,8 +88,6 @@ items:
     labels:
       app: nodejs-ex
     name: nodejs-ex
-    namespace: playground
-    uid: 0b6d8912-3386-11e9-86f9-005056836ad3
   spec: {}
 - apiVersion: route.openshift.io/v1
   kind: Route
@@ -104,8 +95,6 @@ items:
     labels:
       app: nodejs-ex
     name: nodejs-ex
-    namespace: playground
-    uid: 0b6d9fd3-3386-11e9-86f9-005056836ad3
   spec:
     host: nodejs-ex-playground.example.org
     port:

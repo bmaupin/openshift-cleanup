@@ -6,10 +6,7 @@ items:
     labels:
       app: node-openshift-test
     name: node-openshift-test
-    namespace: playground
-    uid: 760c701a-315c-11e9-b2bb-005056836ad3
   spec:
-    clusterIP: 172.30.10.188
     ports:
     - name: 8080-tcp
       port: 8080
@@ -22,8 +19,6 @@ items:
     labels:
       app: node-openshift-test
     name: node-openshift-test
-    namespace: playground
-    uid: 760b70f4-315c-11e9-b2bb-005056836ad3
   spec:
     replicas: 1
     selector:
@@ -60,8 +55,6 @@ items:
     labels:
       app: node-openshift-test
     name: node-openshift-test
-    namespace: playground
-    uid: 760b46ec-315c-11e9-b2bb-005056836ad3
   spec:
     tags:
     - from:
