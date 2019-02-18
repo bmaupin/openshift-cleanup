@@ -1,0 +1,2028 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
+        api; cpu limit for container api'
+      openshift.io/deployment-config.latest-version: "52"
+      openshift.io/deployment-config.name: api
+      openshift.io/deployment.name: api-52
+      openshift.io/scc: restricted
+    creationTimestamp: 2018-12-17T17:36:20Z
+    generateName: api-52-
+    labels:
+      app: api
+      deployment: api-52
+      deploymentconfig: api
+    name: api-52-8wtzv
+    namespace: appname
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: api-52
+      uid: 3e33a25e-0222-11e9-bb5d-02ac3a1f9d61
+    resourceVersion: "1609959397"
+    selfLink: /api/v1/namespaces/appname/pods/api-52-8wtzv
+    uid: 44049b97-0222-11e9-9d11-02ec8e61afcf
+  spec:
+    containers:
+    - env:
+      - name: PORT
+        value: "8080"
+      - name: POSTGRESQL_USER
+        value: appname
+      - name: POSTGRESQL_PASSWORD
+        value: QokiDbLoMq6rh3MM
+      - name: POSTGRESQL_DATABASE
+        value: appname
+      - name: NODE_ENV
+        value: production
+      image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      imagePullPolicy: Always
+      name: api
+      ports:
+      - containerPort: 8080
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 10m
+          memory: 128Mi
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - NET_RAW
+          - SETGID
+          - SETUID
+        runAsUser: 1032050000
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-2s9nj
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-2knj7
+    nodeName: ip-172-31-25-254.ca-central-1.compute.internal
+    nodeSelector:
+      type: compute
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1032050000
+      seLinuxOptions:
+        level: s0:c179,c94
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: default-token-2s9nj
+      secret:
+        defaultMode: 420
+        secretName: default-token-2s9nj
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: 2018-12-17T17:36:20Z
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: 2019-01-04T09:16:54Z
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: null
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: 2018-12-17T17:36:20Z
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: cri-o://d0c53a4250b96bb2cca5fbfb0940ec83fff548e451f4c61cbe5513afa7af53ac
+      image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      imageID: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      lastState:
+        terminated:
+          containerID: cri-o://ec06dc39027bde4e8c3854166f6f2aa995d503938f8f47875208183c2b1bcbe8
+          exitCode: 0
+          finishedAt: 2019-01-04T08:59:51Z
+          reason: Completed
+          startedAt: 2018-12-17T17:36:41Z
+      name: api
+      ready: true
+      restartCount: 1
+      state:
+        running:
+          startedAt: 2019-01-04T09:15:53Z
+    hostIP: 172.31.25.254
+    phase: Running
+    podIP: 10.130.111.192
+    qosClass: Burstable
+    startTime: 2018-12-17T17:36:20Z
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
+        api; cpu limit for container api'
+      openshift.io/deployment-config.latest-version: "52"
+      openshift.io/deployment-config.name: api
+      openshift.io/deployment.name: api-52
+      openshift.io/scc: restricted
+    creationTimestamp: 2018-12-17T17:38:16Z
+    generateName: api-52-
+    labels:
+      app: api
+      deployment: api-52
+      deploymentconfig: api
+    name: api-52-t4m5v
+    namespace: appname
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: api-52
+      uid: 3e33a25e-0222-11e9-bb5d-02ac3a1f9d61
+    resourceVersion: "1609274527"
+    selfLink: /api/v1/namespaces/appname/pods/api-52-t4m5v
+    uid: 894fcce9-0222-11e9-9d11-02ec8e61afcf
+  spec:
+    containers:
+    - env:
+      - name: PORT
+        value: "8080"
+      - name: POSTGRESQL_USER
+        value: appname
+      - name: POSTGRESQL_PASSWORD
+        value: QokiDbLoMq6rh3MM
+      - name: POSTGRESQL_DATABASE
+        value: appname
+      - name: NODE_ENV
+        value: production
+      image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      imagePullPolicy: Always
+      name: api
+      ports:
+      - containerPort: 8080
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 10m
+          memory: 128Mi
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - NET_RAW
+          - SETGID
+          - SETUID
+        runAsUser: 1032050000
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-2s9nj
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-2knj7
+    nodeName: ip-172-31-27-18.ca-central-1.compute.internal
+    nodeSelector:
+      type: compute
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1032050000
+      seLinuxOptions:
+        level: s0:c179,c94
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: default-token-2s9nj
+      secret:
+        defaultMode: 420
+        secretName: default-token-2s9nj
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: 2018-12-17T17:38:16Z
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: 2019-01-04T06:19:50Z
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: null
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: 2018-12-17T17:38:16Z
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: cri-o://6d84b4fdbe052a54c05ce79a9e2e27c6debbe14a39bee8cdb39f4fa103d428cd
+      image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      imageID: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      lastState:
+        terminated:
+          containerID: cri-o://6b4891645d869eb9e62fd320c89585e063723b1977667999b61d3d8de258f791
+          exitCode: 1
+          finishedAt: 2019-01-04T06:18:25Z
+          reason: Error
+          startedAt: 2019-01-04T06:16:04Z
+      name: api
+      ready: true
+      restartCount: 2
+      state:
+        running:
+          startedAt: 2019-01-04T06:18:42Z
+    hostIP: 172.31.27.18
+    phase: Running
+    podIP: 10.129.14.205
+    qosClass: Burstable
+    startTime: 2018-12-17T17:38:16Z
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
+        postgresql; cpu limit for container postgresql'
+      openshift.io/deployment-config.latest-version: "5"
+      openshift.io/deployment-config.name: postgresql
+      openshift.io/deployment.name: postgresql-5
+      openshift.io/scc: restricted
+    creationTimestamp: 2018-12-21T10:36:38Z
+    generateName: postgresql-5-
+    labels:
+      deployment: postgresql-5
+      deploymentconfig: postgresql
+      name: postgresql
+    name: postgresql-5-5j2hp
+    namespace: appname
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: postgresql-5
+      uid: 1f2b6e50-dec6-11e8-902e-02ac3a1f9d61
+    resourceVersion: "1609103137"
+    selfLink: /api/v1/namespaces/appname/pods/postgresql-5-5j2hp
+    uid: 4bd6f8e5-050c-11e9-9d11-02ec8e61afcf
+  spec:
+    containers:
+    - env:
+      - name: POSTGRESQL_USER
+        value: appname
+      - name: POSTGRESQL_PASSWORD
+        value: QokiDbLoMq6rh3MM
+      - name: POSTGRESQL_DATABASE
+        value: appname
+      image: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+      imagePullPolicy: Always
+      livenessProbe:
+        exec:
+          command:
+          - /bin/sh
+          - -i
+          - -c
+          - pg_isready -h 127.0.0.1 -p 5432
+        failureThreshold: 3
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: postgresql
+      ports:
+      - containerPort: 5432
+        protocol: TCP
+      readinessProbe:
+        exec:
+          command:
+          - /bin/sh
+          - -i
+          - -c
+          - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c 'SELECT
+            1'
+        failureThreshold: 3
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          memory: 512Mi
+        requests:
+          cpu: 20m
+          memory: 256Mi
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - NET_RAW
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1032050000
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/lib/pgsql/data
+        name: postgresql-data
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-2s9nj
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-2knj7
+    nodeName: ip-172-31-17-88.ca-central-1.compute.internal
+    nodeSelector:
+      type: compute
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1032050000
+      seLinuxOptions:
+        level: s0:c179,c94
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: postgresql-data
+      persistentVolumeClaim:
+        claimName: postgresql
+    - name: default-token-2s9nj
+      secret:
+        defaultMode: 420
+        secretName: default-token-2s9nj
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: 2018-12-21T10:36:38Z
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: 2019-01-04T05:34:55Z
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: null
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: 2018-12-21T10:36:38Z
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: cri-o://cf675d414d5f507bd8350fb83578527cc494ab9fdc913c37f32ebabc87cee3d6
+      image: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+      imageID: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+      lastState:
+        terminated:
+          containerID: cri-o://dbff8d5b3e49763e92409afa878e269b80ea51902b72c7ebed91605c8617c186
+          exitCode: 0
+          finishedAt: 2019-01-04T05:26:12Z
+          reason: Completed
+          startedAt: 2018-12-21T11:15:35Z
+      name: postgresql
+      ready: true
+      restartCount: 1
+      state:
+        running:
+          startedAt: 2019-01-04T05:34:50Z
+    hostIP: 172.31.17.88
+    phase: Running
+    podIP: 10.130.12.197
+    qosClass: Burstable
+    startTime: 2018-12-21T10:36:38Z
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/desired-replicas: "1"
+      openshift.io/deployer-pod.created-at: 2018-10-18 17:39:13 +0000 UTC
+      openshift.io/deployer-pod.name: api-40-deploy
+      openshift.io/deployment-config.latest-version: "40"
+      openshift.io/deployment-config.name: api
+      openshift.io/deployment.phase: Failed
+      openshift.io/deployment.replicas: "0"
+      openshift.io/deployment.status-reason: image change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"apps.openshift.io/v1","metadata":{"name":"api","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/api","uid":"3fa6f688-2c6e-11e8-b11f-02ec8e61afcf","resourceVersion":"1159199082","generation":47,"creationTimestamp":"2018-03-20T18:41:06Z","labels":{"app":"api"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["api"],"from":{"kind":"ImageStreamTag","namespace":"appname","name":"api:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/appname/api@sha256:7ccf709e1492a34350b11f61729b5560233e3a21fd263007d736e33acdd516e6"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentconfig":"api"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"api","deploymentconfig":"api"}},"spec":{"containers":[{"name":"api","image":"docker-registry.default.svc:5000/appname/api@sha256:7ccf709e1492a34350b11f61729b5560233e3a21fd263007d736e33acdd516e6","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"PORT","value":"8080"},{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"},{"name":"NODE_ENV","value":"production"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":40,"observedGeneration":46,"replicas":1,"updatedReplicas":1,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/appname/api@sha256:7ccf709e1492a34350b11f61729b5560233e3a21fd263007d736e33acdd516e6"}}}]},"conditions":[{"type":"Progressing","status":"True","lastUpdateTime":"2018-08-06T17:05:09Z","lastTransitionTime":"2018-08-06T17:04:55Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"api-39\" successfully rolled out"},{"type":"Available","status":"True","lastUpdateTime":"2018-10-02T21:49:53Z","lastTransitionTime":"2018-10-02T21:49:53Z","message":"Deployment config has minimum availability."}],"readyReplicas":1}}
+    creationTimestamp: 2018-10-18T17:39:13Z
+    generation: 1
+    labels:
+      app: api
+      openshift.io/deployment-config.name: api
+    name: api-40
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: api
+      uid: 3fa6f688-2c6e-11e8-b11f-02ec8e61afcf
+    resourceVersion: "1159427505"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/api-40
+    uid: ba8f785a-d2fc-11e8-8383-02d8407159d1
+  spec:
+    replicas: 0
+    selector:
+      deployment: api-40
+      deploymentconfig: api
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "40"
+          openshift.io/deployment-config.name: api
+          openshift.io/deployment.name: api-40
+        creationTimestamp: null
+        labels:
+          app: api
+          deployment: api-40
+          deploymentconfig: api
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          - name: NODE_ENV
+            value: production
+          image: docker-registry.default.svc:5000/appname/api@sha256:7ccf709e1492a34350b11f61729b5560233e3a21fd263007d736e33acdd516e6
+          imagePullPolicy: Always
+          name: api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 1
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "2"
+      openshift.io/deployer-pod.completed-at: 2018-11-08 18:55:07 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-11-08 18:53:23 +0000 UTC
+      openshift.io/deployer-pod.name: api-50-deploy
+      openshift.io/deployment-config.latest-version: "50"
+      openshift.io/deployment-config.name: api
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: image change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"apps.openshift.io/v1","metadata":{"name":"api","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/api","uid":"3fa6f688-2c6e-11e8-b11f-02ec8e61afcf","resourceVersion":"1272559936","generation":66,"creationTimestamp":"2018-03-20T18:41:06Z","labels":{"app":"api"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":0},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["api"],"from":{"kind":"ImageStreamTag","namespace":"appname","name":"api:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/appname/api@sha256:2dfe42eb0a6f6523fdef68394d8b32901c2ecbea86dfbc6f497a535430e6b92e"}},{"type":"ConfigChange"}],"replicas":2,"test":false,"selector":{"deploymentconfig":"api"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"api","deploymentconfig":"api"}},"spec":{"containers":[{"name":"api","image":"docker-registry.default.svc:5000/appname/api@sha256:2dfe42eb0a6f6523fdef68394d8b32901c2ecbea86dfbc6f497a535430e6b92e","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"PORT","value":"8080"},{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"},{"name":"NODE_ENV","value":"production"}],"resources":{"limits":{"memory":"256Mi"}},"readinessProbe":{"httpGet":{"path":"/","port":8080,"scheme":"HTTP"},"initialDelaySeconds":60,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":50,"observedGeneration":65,"replicas":2,"updatedReplicas":2,"availableReplicas":2,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/appname/api@sha256:2dfe42eb0a6f6523fdef68394d8b32901c2ecbea86dfbc6f497a535430e6b92e"}}}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-11-05T19:13:23Z","lastTransitionTime":"2018-11-05T19:13:23Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-11-06T18:44:30Z","lastTransitionTime":"2018-11-06T18:44:24Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"api-49\" successfully rolled out"}],"readyReplicas":2}}
+    creationTimestamp: 2018-11-08T18:53:23Z
+    generation: 5
+    labels:
+      app: api
+      openshift.io/deployment-config.name: api
+    name: api-50
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: api
+      uid: 3fa6f688-2c6e-11e8-b11f-02ec8e61afcf
+    resourceVersion: "1345768294"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/api-50
+    uid: 91312dc8-e387-11e8-8383-02d8407159d1
+  spec:
+    replicas: 0
+    selector:
+      deployment: api-50
+      deploymentconfig: api
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "50"
+          openshift.io/deployment-config.name: api
+          openshift.io/deployment.name: api-50
+        creationTimestamp: null
+        labels:
+          app: api
+          deployment: api-50
+          deploymentconfig: api
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          - name: NODE_ENV
+            value: production
+          image: docker-registry.default.svc:5000/appname/api@sha256:2dfe42eb0a6f6523fdef68394d8b32901c2ecbea86dfbc6f497a535430e6b92e
+          imagePullPolicy: Always
+          name: api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 5
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "2"
+      openshift.io/deployer-pod.completed-at: 2018-11-20 21:13:22 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-11-20 21:07:05 +0000 UTC
+      openshift.io/deployer-pod.name: api-51-deploy
+      openshift.io/deployment-config.latest-version: "51"
+      openshift.io/deployment-config.name: api
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: image change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"apps.openshift.io/v1","metadata":{"name":"api","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/api","uid":"3fa6f688-2c6e-11e8-b11f-02ec8e61afcf","resourceVersion":"1345737800","generation":67,"creationTimestamp":"2018-03-20T18:41:06Z","labels":{"app":"api"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":0},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["api"],"from":{"kind":"ImageStreamTag","namespace":"appname","name":"api:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/appname/api@sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8"}},{"type":"ConfigChange"}],"replicas":2,"test":false,"selector":{"deploymentconfig":"api"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"api","deploymentconfig":"api"}},"spec":{"containers":[{"name":"api","image":"docker-registry.default.svc:5000/appname/api@sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"PORT","value":"8080"},{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"},{"name":"NODE_ENV","value":"production"}],"resources":{"limits":{"memory":"256Mi"}},"readinessProbe":{"httpGet":{"path":"/","port":8080,"scheme":"HTTP"},"initialDelaySeconds":60,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":51,"observedGeneration":66,"replicas":2,"updatedReplicas":2,"availableReplicas":2,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/appname/api@sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8"}}}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-11-05T19:13:23Z","lastTransitionTime":"2018-11-05T19:13:23Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-11-08T18:55:08Z","lastTransitionTime":"2018-11-08T18:55:04Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"api-50\" successfully rolled out"}],"readyReplicas":2}}
+    creationTimestamp: 2018-11-20T21:07:04Z
+    generation: 5
+    labels:
+      app: api
+      openshift.io/deployment-config.name: api
+    name: api-51
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: api
+      uid: 3fa6f688-2c6e-11e8-b11f-02ec8e61afcf
+    resourceVersion: "1523841741"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/api-51
+    uid: 3b4db4e9-ed08-11e8-bb5d-02ac3a1f9d61
+  spec:
+    replicas: 0
+    selector:
+      deployment: api-51
+      deploymentconfig: api
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "51"
+          openshift.io/deployment-config.name: api
+          openshift.io/deployment.name: api-51
+        creationTimestamp: null
+        labels:
+          app: api
+          deployment: api-51
+          deploymentconfig: api
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          - name: NODE_ENV
+            value: production
+          image: docker-registry.default.svc:5000/appname/api@sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8
+          imagePullPolicy: Always
+          name: api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 5
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-12-17 17:38:19 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-12-17 17:36:10 +0000 UTC
+      openshift.io/deployer-pod.name: api-52-deploy
+      openshift.io/deployment-config.latest-version: "52"
+      openshift.io/deployment-config.name: api
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: image change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"apps.openshift.io/v1","metadata":{"name":"api","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/api","uid":"3fa6f688-2c6e-11e8-b11f-02ec8e61afcf","resourceVersion":"1523834721","generation":68,"creationTimestamp":"2018-03-20T18:41:06Z","labels":{"app":"api"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":0},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["api"],"from":{"kind":"ImageStreamTag","namespace":"appname","name":"api:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a"}},{"type":"ConfigChange"}],"replicas":2,"test":false,"selector":{"deploymentconfig":"api"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"api","deploymentconfig":"api"}},"spec":{"containers":[{"name":"api","image":"docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"PORT","value":"8080"},{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"},{"name":"NODE_ENV","value":"production"}],"resources":{"limits":{"memory":"256Mi"}},"readinessProbe":{"httpGet":{"path":"/","port":8080,"scheme":"HTTP"},"initialDelaySeconds":60,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":52,"observedGeneration":67,"replicas":2,"updatedReplicas":2,"availableReplicas":2,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a"}}}]},"conditions":[{"type":"Progressing","status":"True","lastUpdateTime":"2018-11-20T21:13:24Z","lastTransitionTime":"2018-11-20T21:13:20Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"api-51\" successfully rolled out"},{"type":"Available","status":"True","lastUpdateTime":"2018-12-12T06:20:25Z","lastTransitionTime":"2018-12-12T06:20:25Z","message":"Deployment config has minimum availability."}],"readyReplicas":2}}
+    creationTimestamp: 2018-12-17T17:36:10Z
+    generation: 3
+    labels:
+      app: api
+      openshift.io/deployment-config.name: api
+    name: api-52
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: api
+      uid: 3fa6f688-2c6e-11e8-b11f-02ec8e61afcf
+    resourceVersion: "1609959399"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/api-52
+    uid: 3e33a25e-0222-11e9-bb5d-02ac3a1f9d61
+  spec:
+    replicas: 2
+    selector:
+      deployment: api-52
+      deploymentconfig: api
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "52"
+          openshift.io/deployment-config.name: api
+          openshift.io/deployment.name: api-52
+        creationTimestamp: null
+        labels:
+          app: api
+          deployment: api-52
+          deploymentconfig: api
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          - name: NODE_ENV
+            value: production
+          image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+          imagePullPolicy: Always
+          name: api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 3
+    readyReplicas: 2
+    replicas: 2
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-04-04 17:41:56 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-04-04 17:39:23 +0000 UTC
+      openshift.io/deployer-pod.name: postgresql-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: postgresql
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"postgresql","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/postgresql","uid":"592cc144-382d-11e8-a010-02d8407159d1","resourceVersion":"490439268","generation":3,"creationTimestamp":"2018-04-04T17:26:45Z","labels":{"app":"postgresql-persistent","template":"postgresql-persistent-template"},"annotations":{"template.alpha.openshift.io/wait-for-ready":"true"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["postgresql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"postgresql:9.6"},"lastTriggeredImage":"registry.access.redhat.com/rhscl/postgresql-96-rhel7@sha256:06b86e301a272c1861571e1c514d3f71f7a1bd0f4cbc283b352bb6c5a34b62ec"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"name":"postgresql"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"postgresql"}},"spec":{"volumes":[{"name":"postgresql-data","persistentVolumeClaim":{"claimName":"postgresql"}}],"containers":[{"name":"postgresql","image":"registry.access.redhat.com/rhscl/postgresql-96-rhel7@sha256:06b86e301a272c1861571e1c514d3f71f7a1bd0f4cbc283b352bb6c5a34b62ec","ports":[{"containerPort":5432,"protocol":"TCP"}],"env":[{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"}],"resources":{"limits":{"memory":"512Mi"}},"volumeMounts":[{"name":"postgresql-data","mountPath":"/var/lib/pgsql/data"}],"livenessProbe":{"exec":{"command":["/bin/sh","-i","-c","pg_isready -h 127.0.0.1 -p 5432"]},"initialDelaySeconds":30,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"exec":{"command":["/bin/sh","-i","-c","psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c 'SELECT 1'"]},"initialDelaySeconds":5,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent","securityContext":{"capabilities":{},"privileged":false}}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-04-04T17:26:45Z","lastTransitionTime":"2018-04-04T17:26:45Z","message":"Deployment config does not have minimum availability."},{"type":"Progressing","status":"False","lastUpdateTime":"2018-04-04T17:36:54Z","lastTransitionTime":"2018-04-04T17:36:54Z","reason":"ProgressDeadlineExceeded","message":"replication controller \"postgresql-1\" has failed progressing"}]}}
+    creationTimestamp: 2018-04-04T17:39:23Z
+    generation: 7
+    labels:
+      app: postgresql-persistent
+      openshift.io/deployment-config.name: postgresql
+      template: postgresql-persistent-template
+    name: postgresql-2
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: postgresql
+      uid: 592cc144-382d-11e8-a010-02d8407159d1
+    resourceVersion: "1240172016"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/postgresql-2
+    uid: 1ccaae32-382f-11e8-95f8-02ec8e61afcf
+  spec:
+    replicas: 0
+    selector:
+      deployment: postgresql-2
+      deploymentconfig: postgresql
+      name: postgresql
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: postgresql
+          openshift.io/deployment.name: postgresql-2
+        creationTimestamp: null
+        labels:
+          deployment: postgresql-2
+          deploymentconfig: postgresql
+          name: postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          image: registry.access.redhat.com/rhscl/postgresql-96-rhel7@sha256:06b86e301a272c1861571e1c514d3f71f7a1bd0f4cbc283b352bb6c5a34b62ec
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                'SELECT 1'
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
+  status:
+    observedGeneration: 7
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/desired-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-09-10 21:43:59 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-09-10 21:17:26 +0000 UTC
+      openshift.io/deployer-pod.name: postgresql-4-deploy
+      openshift.io/deployment-config.latest-version: "4"
+      openshift.io/deployment-config.name: postgresql
+      openshift.io/deployment.phase: Failed
+      openshift.io/deployment.replicas: "0"
+      openshift.io/deployment.status-reason: image change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"apps.openshift.io/v1","metadata":{"name":"postgresql","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/postgresql","uid":"592cc144-382d-11e8-a010-02d8407159d1","resourceVersion":"977742206","generation":5,"creationTimestamp":"2018-04-04T17:26:45Z","labels":{"app":"postgresql-persistent","template":"postgresql-persistent-template"},"annotations":{"template.alpha.openshift.io/wait-for-ready":"true"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["postgresql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"postgresql:9.6"},"lastTriggeredImage":"docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"name":"postgresql"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"postgresql"}},"spec":{"volumes":[{"name":"postgresql-data","persistentVolumeClaim":{"claimName":"postgresql"}}],"containers":[{"name":"postgresql","image":"docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193","ports":[{"containerPort":5432,"protocol":"TCP"}],"env":[{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"}],"resources":{"limits":{"memory":"512Mi"}},"volumeMounts":[{"name":"postgresql-data","mountPath":"/var/lib/pgsql/data"}],"livenessProbe":{"exec":{"command":["/bin/sh","-i","-c","pg_isready -h 127.0.0.1 -p 5432"]},"initialDelaySeconds":30,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"exec":{"command":["/bin/sh","-i","-c","psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c 'SELECT 1'"]},"initialDelaySeconds":5,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent","securityContext":{"capabilities":{},"privileged":false}}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":4,"observedGeneration":4,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193"}}}]},"conditions":[{"type":"Progressing","status":"False","lastUpdateTime":"2018-06-15T22:30:08Z","lastTransitionTime":"2018-06-15T22:30:08Z","reason":"ProgressDeadlineExceeded","message":"replication controller \"postgresql-3\" has failed progressing"},{"type":"Available","status":"True","lastUpdateTime":"2018-09-04T22:07:44Z","lastTransitionTime":"2018-09-04T22:07:44Z","message":"Deployment config has minimum availability."}],"readyReplicas":1}}
+    creationTimestamp: 2018-09-10T21:17:19Z
+    generation: 3
+    labels:
+      app: postgresql-persistent
+      openshift.io/deployment-config.name: postgresql
+      template: postgresql-persistent-template
+    name: postgresql-4
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: postgresql
+      uid: 592cc144-382d-11e8-a010-02d8407159d1
+    resourceVersion: "978189227"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/postgresql-4
+    uid: e692cd91-b53e-11e8-b72c-02d8407159d1
+  spec:
+    replicas: 0
+    selector:
+      deployment: postgresql-4
+      deploymentconfig: postgresql
+      name: postgresql
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "4"
+          openshift.io/deployment-config.name: postgresql
+          openshift.io/deployment.name: postgresql-4
+        creationTimestamp: null
+        labels:
+          deployment: postgresql-4
+          deploymentconfig: postgresql
+          name: postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          image: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                'SELECT 1'
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-11-02 17:39:16 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-11-02 17:38:34 +0000 UTC
+      openshift.io/deployer-pod.name: postgresql-5-deploy
+      openshift.io/deployment-config.latest-version: "5"
+      openshift.io/deployment-config.name: postgresql
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: manual change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"apps.openshift.io/v1","metadata":{"name":"postgresql","namespace":"appname","selfLink":"/apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/postgresql","uid":"592cc144-382d-11e8-a010-02d8407159d1","resourceVersion":"1240171740","generation":6,"creationTimestamp":"2018-04-04T17:26:45Z","labels":{"app":"postgresql-persistent","template":"postgresql-persistent-template"},"annotations":{"template.alpha.openshift.io/wait-for-ready":"true"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["postgresql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"postgresql:9.6"},"lastTriggeredImage":"docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"name":"postgresql"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"postgresql"}},"spec":{"volumes":[{"name":"postgresql-data","persistentVolumeClaim":{"claimName":"postgresql"}}],"containers":[{"name":"postgresql","image":"docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193","ports":[{"containerPort":5432,"protocol":"TCP"}],"env":[{"name":"POSTGRESQL_USER","value":"appname"},{"name":"POSTGRESQL_PASSWORD","value":"QokiDbLoMq6rh3MM"},{"name":"POSTGRESQL_DATABASE","value":"appname"}],"resources":{"limits":{"memory":"512Mi"}},"volumeMounts":[{"name":"postgresql-data","mountPath":"/var/lib/pgsql/data"}],"livenessProbe":{"exec":{"command":["/bin/sh","-i","-c","pg_isready -h 127.0.0.1 -p 5432"]},"initialDelaySeconds":30,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"exec":{"command":["/bin/sh","-i","-c","psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c 'SELECT 1'"]},"initialDelaySeconds":5,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent","securityContext":{"capabilities":{},"privileged":false}}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":5,"observedGeneration":5,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"manual change","causes":[{"type":"Manual"}]},"conditions":[{"type":"Progressing","status":"False","lastUpdateTime":"2018-09-10T21:44:00Z","lastTransitionTime":"2018-09-10T21:44:00Z","reason":"ProgressDeadlineExceeded","message":"replication controller \"postgresql-4\" has failed progressing"},{"type":"Available","status":"True","lastUpdateTime":"2018-10-31T21:41:38Z","lastTransitionTime":"2018-10-31T21:41:38Z","message":"Deployment config has minimum availability."}],"readyReplicas":1}}
+    creationTimestamp: 2018-11-02T17:38:34Z
+    generation: 2
+    labels:
+      app: postgresql-persistent
+      openshift.io/deployment-config.name: postgresql
+      template: postgresql-persistent-template
+    name: postgresql-5
+    namespace: appname
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: postgresql
+      uid: 592cc144-382d-11e8-a010-02d8407159d1
+    resourceVersion: "1609103141"
+    selfLink: /api/v1/namespaces/appname/replicationcontrollers/postgresql-5
+    uid: 1f2b6e50-dec6-11e8-902e-02ac3a1f9d61
+  spec:
+    replicas: 1
+    selector:
+      deployment: postgresql-5
+      deploymentconfig: postgresql
+      name: postgresql
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "5"
+          openshift.io/deployment-config.name: postgresql
+          openshift.io/deployment.name: postgresql-5
+        creationTimestamp: null
+        labels:
+          deployment: postgresql-5
+          deploymentconfig: postgresql
+          name: postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          image: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                'SELECT 1'
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2018-03-20T18:41:06Z
+    labels:
+      app: api
+    name: api
+    namespace: appname
+    resourceVersion: "446393226"
+    selfLink: /api/v1/namespaces/appname/services/api
+    uid: 3fa696ee-2c6e-11e8-838f-02d8407159d1
+  spec:
+    clusterIP: 172.30.199.212
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: api
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+    creationTimestamp: 2018-04-04T17:26:45Z
+    labels:
+      app: postgresql-persistent
+      template: postgresql-persistent-template
+    name: postgresql
+    namespace: appname
+    resourceVersion: "490418694"
+    selfLink: /api/v1/namespaces/appname/services/postgresql
+    uid: 5932eaf8-382d-11e8-95f8-02ec8e61afcf
+  spec:
+    clusterIP: 172.30.78.193
+    ports:
+    - name: postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: postgresql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2018-03-20T18:41:06Z
+    generation: 68
+    labels:
+      app: api
+    name: api
+    namespace: appname
+    resourceVersion: "1609959402"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/api
+    uid: 3fa6f688-2c6e-11e8-b11f-02ec8e61afcf
+  spec:
+    replicas: 2
+    selector:
+      deploymentconfig: api
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 0
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: api
+          deploymentconfig: api
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          - name: NODE_ENV
+            value: production
+          image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+          imagePullPolicy: Always
+          name: api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - api
+        from:
+          kind: ImageStreamTag
+          name: api:latest
+          namespace: appname
+        lastTriggeredImage: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: 2018-12-12T06:20:25Z
+      lastUpdateTime: 2018-12-12T06:20:25Z
+      message: Deployment config has minimum availability.
+      status: "True"
+      type: Available
+    - lastTransitionTime: 2018-12-17T17:38:16Z
+      lastUpdateTime: 2018-12-17T17:38:20Z
+      message: replication controller "api-52" successfully rolled out
+      reason: NewReplicationControllerAvailable
+      status: "True"
+      type: Progressing
+    details:
+      causes:
+      - imageTrigger:
+          from:
+            kind: DockerImage
+            name: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+        type: ImageChange
+      message: image change
+    latestVersion: 52
+    observedGeneration: 68
+    readyReplicas: 2
+    replicas: 2
+    unavailableReplicas: 0
+    updatedReplicas: 2
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    creationTimestamp: 2018-04-04T17:26:45Z
+    generation: 6
+    labels:
+      app: postgresql-persistent
+      template: postgresql-persistent-template
+    name: postgresql
+    namespace: appname
+    resourceVersion: "1609103145"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/appname/deploymentconfigs/postgresql
+    uid: 592cc144-382d-11e8-a010-02d8407159d1
+  spec:
+    replicas: 1
+    selector:
+      name: postgresql
+    strategy:
+      activeDeadlineSeconds: 21600
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          image: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                'SELECT 1'
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.6
+          namespace: openshift
+        lastTriggeredImage: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2018-11-02T17:38:45Z
+      lastUpdateTime: 2018-11-02T17:39:17Z
+      message: replication controller "postgresql-5" successfully rolled out
+      reason: NewReplicationControllerAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2019-01-04T05:34:55Z
+      lastUpdateTime: 2019-01-04T05:34:55Z
+      message: Deployment config has minimum availability.
+      status: "True"
+      type: Available
+    details:
+      causes:
+      - type: Manual
+      message: manual change
+    latestVersion: 5
+    observedGeneration: 6
+    readyReplicas: 1
+    replicas: 1
+    unavailableReplicas: 0
+    updatedReplicas: 1
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2018-03-20T18:41:06Z
+    labels:
+      app: api
+    name: api
+    namespace: appname
+    resourceVersion: "1523465017"
+    selfLink: /apis/build.openshift.io/v1/namespaces/appname/buildconfigs/api
+    uid: 3fa73566-2c6e-11e8-86b7-02ac3a1f9d61
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: api:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        ref: master
+        uri: https://github.com/some/repo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+      type: Source
+    triggers:
+    - generic:
+        secret: 6342148d13e46fca
+      type: Generic
+    - github:
+        secret: 1fa9b31766f37a8a
+      type: GitHub
+    - imageChange:
+        lastTriggeredImageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:1a42ca9592ea96f1d9b6042cab05191e68ba7759e98b25334bd6af04cd028b35
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    lastVersion: 43
+- apiVersion: build.openshift.io/v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: api
+      openshift.io/build.number: "36"
+      openshift.io/build.pod-name: api-36-build
+    creationTimestamp: 2018-09-10T21:15:50Z
+    labels:
+      app: api
+      buildconfig: api
+      openshift.io/build-config.name: api
+      openshift.io/build.start-policy: Serial
+    name: api-36
+    namespace: appname
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: api
+      uid: 3fa73566-2c6e-11e8-86b7-02ac3a1f9d61
+    resourceVersion: "978283692"
+    selfLink: /apis/build.openshift.io/v1/namespaces/appname/builds/api-36
+    uid: b16c4a82-b53e-11e8-b72c-02d8407159d1
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-bxsz5
+      to:
+        kind: ImageStreamTag
+        name: api:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: someuser@users.noreply.github.com
+          name: someuser
+        commit: 023877477c0c630cbcef90f8b0c8e0661a722d01
+        committer:
+          email: someuser@users.noreply.github.com
+          name: someuser
+        message: Add Docker compose file
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        ref: master
+        uri: https://github.com/some/repo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker-registry.default.svc:5000/openshift/nodejs@sha256:a94f8c03e73a444f9d17d4e34c71c58309e4d2058e1b247c904863b06384d0bd
+        pullSecret:
+          name: builder-dockercfg-bxsz5
+      type: Source
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+        imageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:a94f8c03e73a444f9d17d4e34c71c58309e4d2058e1b247c904863b06384d0bd
+      message: Image change
+  status:
+    completionTimestamp: 2018-09-10T21:49:21Z
+    config:
+      kind: BuildConfig
+      name: api
+      namespace: appname
+    duration: 1383000000000
+    logSnippet: "Registry server Address: \nRegistry server User Name: serviceaccount\nRegistry
+      server Email: serviceaccount@example.org\nRegistry server Password: <<non-empty>>\nerror:
+      build error: Failed to push image: error parsing HT...ng of value: \"Too many
+      requests, please try again later.\\n\""
+    message: Failed to push the image to the registry.
+    output: {}
+    outputDockerImageReference: docker-registry.default.svc:5000/appname/api:latest
+    phase: Failed
+    reason: PushImageToRegistryFailed
+    stages:
+    - durationMilliseconds: 1108
+      name: FetchInputs
+      startTime: 2018-09-10T21:26:55Z
+      steps:
+      - durationMilliseconds: 1108
+        name: FetchGitSource
+        startTime: 2018-09-10T21:26:55Z
+    - durationMilliseconds: 76489
+      name: CommitContainer
+      startTime: 2018-09-10T21:39:45Z
+      steps:
+      - durationMilliseconds: 76489
+        name: CommitContainer
+        startTime: 2018-09-10T21:39:45Z
+    - durationMilliseconds: 792474
+      name: Assemble
+      startTime: 2018-09-10T21:27:54Z
+      steps:
+      - durationMilliseconds: 792474
+        name: AssembleBuildScripts
+        startTime: 2018-09-10T21:27:54Z
+    - durationMilliseconds: 492992
+      name: PushImage
+      startTime: 2018-09-10T21:41:07Z
+      steps:
+      - durationMilliseconds: 492992
+        name: PushImage
+        startTime: 2018-09-10T21:41:07Z
+    startTimestamp: 2018-09-10T21:26:18Z
+- apiVersion: build.openshift.io/v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: api
+      openshift.io/build.number: "42"
+      openshift.io/build.pod-name: api-42-build
+    creationTimestamp: 2018-11-20T20:17:27Z
+    labels:
+      app: api
+      buildconfig: api
+      openshift.io/build-config.name: api
+      openshift.io/build.start-policy: Serial
+    name: api-42
+    namespace: appname
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: api
+      uid: 3fa73566-2c6e-11e8-86b7-02ac3a1f9d61
+    resourceVersion: "1345738164"
+    selfLink: /apis/build.openshift.io/v1/namespaces/appname/builds/api-42
+    uid: 4d21373f-ed01-11e8-bb5d-02ac3a1f9d61
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-bxsz5
+      to:
+        kind: ImageStreamTag
+        name: api:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: someuser@users.noreply.github.com
+          name: someuser
+        commit: 157283530459c50859056deb8b6b677398d79220
+        committer:
+          email: someuser@users.noreply.github.com
+          name: someuser
+        message: Fix incorrect iteration over models
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        ref: master
+        uri: https://github.com/some/repo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker-registry.default.svc:5000/openshift/nodejs@sha256:cccc3fd3f3ee14dcfd213cdc37f4cc08cd0cd501a2ebbaa3dd271d850299298d
+        pullSecret:
+          name: builder-dockercfg-bxsz5
+      type: Source
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+        imageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:cccc3fd3f3ee14dcfd213cdc37f4cc08cd0cd501a2ebbaa3dd271d850299298d
+      message: Image change
+  status:
+    completionTimestamp: 2018-11-20T21:07:07Z
+    config:
+      kind: BuildConfig
+      name: api
+      namespace: appname
+    duration: 2410000000000
+    output:
+      to:
+        imageDigest: sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8
+    outputDockerImageReference: docker-registry.default.svc:5000/appname/api:latest
+    phase: Complete
+    stages:
+    - durationMilliseconds: 1057
+      name: FetchInputs
+      startTime: 2018-11-20T20:31:12Z
+      steps:
+      - durationMilliseconds: 1057
+        name: FetchGitSource
+        startTime: 2018-11-20T20:31:12Z
+    - durationMilliseconds: 20237
+      name: CommitContainer
+      startTime: 2018-11-20T20:41:38Z
+      steps:
+      - durationMilliseconds: 20237
+        name: CommitContainer
+        startTime: 2018-11-20T20:41:38Z
+    - durationMilliseconds: 132752
+      name: Assemble
+      startTime: 2018-11-20T20:39:47Z
+      steps:
+      - durationMilliseconds: 132752
+        name: AssembleBuildScripts
+        startTime: 2018-11-20T20:39:47Z
+    - durationMilliseconds: 1503385
+      name: PushImage
+      startTime: 2018-11-20T20:42:00Z
+      steps:
+      - durationMilliseconds: 1503385
+        name: PushImage
+        startTime: 2018-11-20T20:42:00Z
+    startTimestamp: 2018-11-20T20:26:57Z
+- apiVersion: build.openshift.io/v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: api
+      openshift.io/build.number: "43"
+      openshift.io/build.pod-name: api-43-build
+    creationTimestamp: 2018-12-17T16:36:15Z
+    labels:
+      app: api
+      buildconfig: api
+      openshift.io/build-config.name: api
+      openshift.io/build.start-policy: Serial
+    name: api-43
+    namespace: appname
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: api
+      uid: 3fa73566-2c6e-11e8-86b7-02ac3a1f9d61
+    resourceVersion: "1523835051"
+    selfLink: /apis/build.openshift.io/v1/namespaces/appname/builds/api-43
+    uid: defc0e8e-0219-11e9-bb5d-02ac3a1f9d61
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-bxsz5
+      to:
+        kind: ImageStreamTag
+        name: api:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: someuser@users.noreply.github.com
+          name: someuser
+        commit: 157283530459c50859056deb8b6b677398d79220
+        committer:
+          email: someuser@users.noreply.github.com
+          name: someuser
+        message: Fix incorrect iteration over models
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        ref: master
+        uri: https://github.com/some/repo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker-registry.default.svc:5000/openshift/nodejs@sha256:1a42ca9592ea96f1d9b6042cab05191e68ba7759e98b25334bd6af04cd028b35
+        pullSecret:
+          name: builder-dockercfg-bxsz5
+      type: Source
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+        imageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:1a42ca9592ea96f1d9b6042cab05191e68ba7759e98b25334bd6af04cd028b35
+      message: Image change
+  status:
+    completionTimestamp: 2018-12-17T17:36:14Z
+    config:
+      kind: BuildConfig
+      name: api
+      namespace: appname
+    duration: 3598000000000
+    output:
+      to:
+        imageDigest: sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+    outputDockerImageReference: docker-registry.default.svc:5000/appname/api:latest
+    phase: Complete
+    stages:
+    - durationMilliseconds: 1695690
+      name: FetchInputs
+      startTime: 2018-12-17T16:37:35Z
+      steps:
+      - durationMilliseconds: 805
+        name: FetchGitSource
+        startTime: 2018-12-17T16:37:35Z
+      - durationMilliseconds: 896
+        name: FetchGitSource
+        startTime: 2018-12-17T17:05:49Z
+    - durationMilliseconds: 11990
+      name: CommitContainer
+      startTime: 2018-12-17T16:40:42Z
+      steps:
+      - durationMilliseconds: 11990
+        name: CommitContainer
+        startTime: 2018-12-17T16:40:42Z
+    - durationMilliseconds: 137181
+      name: Assemble
+      startTime: 2018-12-17T16:38:38Z
+      steps:
+      - durationMilliseconds: 137181
+        name: AssembleBuildScripts
+        startTime: 2018-12-17T16:38:38Z
+    - durationMilliseconds: 3315231
+      name: PushImage
+      startTime: 2018-12-17T16:40:55Z
+      steps:
+      - durationMilliseconds: 3315231
+        name: PushImage
+        startTime: 2018-12-17T16:40:55Z
+    startTimestamp: 2018-12-17T16:36:16Z
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2018-03-20T18:41:06Z
+    generation: 1
+    labels:
+      app: api
+    name: api
+    namespace: appname
+    resourceVersion: "1523834715"
+    selfLink: /apis/image.openshift.io/v1/namespaces/appname/imagestreams/api
+    uid: 3fa560fb-2c6e-11e8-838f-02d8407159d1
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: docker-registry.default.svc:5000/appname/api
+    tags:
+    - items:
+      - created: 2018-12-17T17:36:10Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+        generation: 1
+        image: sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+      - created: 2018-11-20T21:07:03Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8
+        generation: 1
+        image: sha256:c69611cdf01ee93a9fd9fe3b59e09dc0f1f63a2092dfa1387bae94c36ed93ac8
+      - created: 2018-11-08T18:53:23Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:2dfe42eb0a6f6523fdef68394d8b32901c2ecbea86dfbc6f497a535430e6b92e
+        generation: 1
+        image: sha256:2dfe42eb0a6f6523fdef68394d8b32901c2ecbea86dfbc6f497a535430e6b92e
+      - created: 2018-11-06T18:42:41Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:67a0ee1d25b1c8f14666e6ec7d278f98bf3b279d41dc0f2d35788ed620b6e756
+        generation: 1
+        image: sha256:67a0ee1d25b1c8f14666e6ec7d278f98bf3b279d41dc0f2d35788ed620b6e756
+      - created: 2018-11-06T18:25:40Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:1048f3d0faa496cf26147f8e76426ec45a72cefc701d07f48b32f725261c9283
+        generation: 1
+        image: sha256:1048f3d0faa496cf26147f8e76426ec45a72cefc701d07f48b32f725261c9283
+      - created: 2018-11-05T18:46:47Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:17eddb0114f376a3af4078355757b7b386809aa2967e92dc497783812029e6c5
+        generation: 1
+        image: sha256:17eddb0114f376a3af4078355757b7b386809aa2967e92dc497783812029e6c5
+      - created: 2018-10-18T17:39:13Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:7ccf709e1492a34350b11f61729b5560233e3a21fd263007d736e33acdd516e6
+        generation: 1
+        image: sha256:7ccf709e1492a34350b11f61729b5560233e3a21fd263007d736e33acdd516e6
+      - created: 2018-08-06T17:04:38Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:3cd44b29011a4f135df3e3bc52a0d3ff040790156eaebbb5bd1e43387886b576
+        generation: 1
+        image: sha256:3cd44b29011a4f135df3e3bc52a0d3ff040790156eaebbb5bd1e43387886b576
+      - created: 2018-08-06T16:54:56Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:ac93fc3e6e2b9bba50ec0a1d0685c3add5adb9719bbfa9dcc267b1f095d3c6a4
+        generation: 1
+        image: sha256:ac93fc3e6e2b9bba50ec0a1d0685c3add5adb9719bbfa9dcc267b1f095d3c6a4
+      - created: 2018-08-03T17:37:05Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:000671755f54fb291acce80f2496a0d3d58047c9650b44e3762ad6c9b526232c
+        generation: 1
+        image: sha256:000671755f54fb291acce80f2496a0d3d58047c9650b44e3762ad6c9b526232c
+      - created: 2018-08-02T18:35:12Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:e45660d394b89a991f50c1ed09b4fa6317629ed1c62a16f259eeb47f9557ae8c
+        generation: 1
+        image: sha256:e45660d394b89a991f50c1ed09b4fa6317629ed1c62a16f259eeb47f9557ae8c
+      - created: 2018-07-16T17:34:00Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:e39e3d0437481a1bd9e926081d9e731320c79a5f9f56b1dd15bafab5348c5c03
+        generation: 1
+        image: sha256:e39e3d0437481a1bd9e926081d9e731320c79a5f9f56b1dd15bafab5348c5c03
+      - created: 2018-06-01T18:13:37Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:6abbed166aea424b38864c823dd5a14ed61fc0f793a4f2ae1a1482986693754f
+        generation: 1
+        image: sha256:6abbed166aea424b38864c823dd5a14ed61fc0f793a4f2ae1a1482986693754f
+      - created: 2018-05-31T17:44:58Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:7bbd470389a0e65b0512c4f7d65ee8628a1e2c5bf3e3c565775a92d8b52fdc90
+        generation: 1
+        image: sha256:7bbd470389a0e65b0512c4f7d65ee8628a1e2c5bf3e3c565775a92d8b52fdc90
+      - created: 2018-05-30T17:58:30Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:239b3a001463571401069f51e1cfb66b07e9069c8079f2779db8a1cc91a60a04
+        generation: 1
+        image: sha256:239b3a001463571401069f51e1cfb66b07e9069c8079f2779db8a1cc91a60a04
+      - created: 2018-05-29T18:58:52Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:4fa2d3f5a7c66d2d29555966a7ea7fd1df692d8bcd448b3ab20b0268cfaab3b4
+        generation: 1
+        image: sha256:4fa2d3f5a7c66d2d29555966a7ea7fd1df692d8bcd448b3ab20b0268cfaab3b4
+      - created: 2018-05-28T17:00:10Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:d6262af741537cd40cd53be654b857dcf7932e4c3cf9ff47e1ac6e20dc8a4599
+        generation: 1
+        image: sha256:d6262af741537cd40cd53be654b857dcf7932e4c3cf9ff47e1ac6e20dc8a4599
+      - created: 2018-05-04T17:42:46Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:f8d3267ff5755e11a6ac32648c92858ccf66933ad8d32ed77c4e0abb8a557ed6
+        generation: 1
+        image: sha256:f8d3267ff5755e11a6ac32648c92858ccf66933ad8d32ed77c4e0abb8a557ed6
+      - created: 2018-05-02T17:59:26Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:cbea2450a97005cc5c80cf5fb5ff5ae185e2186685bd498ac174cd88a032b0a2
+        generation: 1
+        image: sha256:cbea2450a97005cc5c80cf5fb5ff5ae185e2186685bd498ac174cd88a032b0a2
+      - created: 2018-05-01T16:08:28Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:f666a001a3c34b886d1a12f99bb5a66594c2d77fb2f26c4aeb399bb48d0c9866
+        generation: 1
+        image: sha256:f666a001a3c34b886d1a12f99bb5a66594c2d77fb2f26c4aeb399bb48d0c9866
+      - created: 2018-04-30T17:59:40Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:1a2665e68312a08d8048d1491842baf648b1b9735f0522ed57c74dc9b94e53c9
+        generation: 1
+        image: sha256:1a2665e68312a08d8048d1491842baf648b1b9735f0522ed57c74dc9b94e53c9
+      - created: 2018-04-27T16:02:29Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:3511277b9c7feae3baa80041047465a6e950da64492888ec04ab8ef1d48c3570
+        generation: 1
+        image: sha256:3511277b9c7feae3baa80041047465a6e950da64492888ec04ab8ef1d48c3570
+      - created: 2018-04-24T17:14:34Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:ef633b2d2ea0e0e30c22cbca105b3f92ca8823a809fa0aa496a474e004b5d71f
+        generation: 1
+        image: sha256:ef633b2d2ea0e0e30c22cbca105b3f92ca8823a809fa0aa496a474e004b5d71f
+      - created: 2018-04-18T17:53:51Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:3319864cc4b811080f381866937c4fbcb1333a525525e5db6d20a07dab74a8ba
+        generation: 1
+        image: sha256:3319864cc4b811080f381866937c4fbcb1333a525525e5db6d20a07dab74a8ba
+      - created: 2018-04-17T18:12:37Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:262f570d8ff358c5414c37a00b004b10be1effc6841325a2cb5244473c4e6119
+        generation: 1
+        image: sha256:262f570d8ff358c5414c37a00b004b10be1effc6841325a2cb5244473c4e6119
+      - created: 2018-04-16T18:07:16Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:9aef2f0373f25e78cb2ef5281588b66915bd575c6d43d9faea3e85a86576d061
+        generation: 1
+        image: sha256:9aef2f0373f25e78cb2ef5281588b66915bd575c6d43d9faea3e85a86576d061
+      - created: 2018-04-11T17:45:04Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:40ed33c18bd15e9f6bbc46fdac1658ed519e55d36820330a1be3fb316e8bd876
+        generation: 1
+        image: sha256:40ed33c18bd15e9f6bbc46fdac1658ed519e55d36820330a1be3fb316e8bd876
+      - created: 2018-04-06T17:24:35Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:7e0773e50669e6bfcfddd3b9adc64258fc131beada54765f5f9130b2db26344b
+        generation: 1
+        image: sha256:7e0773e50669e6bfcfddd3b9adc64258fc131beada54765f5f9130b2db26344b
+      - created: 2018-04-06T17:08:53Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:08901e2105416b92e0599d89b6cb2bcf2a60ec781761d639fcdadbc2d051b528
+        generation: 1
+        image: sha256:08901e2105416b92e0599d89b6cb2bcf2a60ec781761d639fcdadbc2d051b528
+      - created: 2018-04-05T16:44:30Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:485b36aa9df0f1b368d5405823604d45634c47689822d35e10f6333b07ff7b17
+        generation: 1
+        image: sha256:485b36aa9df0f1b368d5405823604d45634c47689822d35e10f6333b07ff7b17
+      - created: 2018-04-05T16:16:06Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:21e5f18f44db4dfe69c00dd57ea6c08a6088ae5eb1152d8e90c43dbe03bf2884
+        generation: 1
+        image: sha256:21e5f18f44db4dfe69c00dd57ea6c08a6088ae5eb1152d8e90c43dbe03bf2884
+      - created: 2018-04-04T17:44:12Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:d98844e5e56b25e7318d273d78665e4ac63dcd65a3ed68acecf095e053a53d05
+        generation: 1
+        image: sha256:d98844e5e56b25e7318d273d78665e4ac63dcd65a3ed68acecf095e053a53d05
+      - created: 2018-04-03T18:16:10Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:417b8c151128fdd54ff4afaa72af9cde4035289589599fba197c0e9ced142eef
+        generation: 1
+        image: sha256:417b8c151128fdd54ff4afaa72af9cde4035289589599fba197c0e9ced142eef
+      - created: 2018-04-02T18:42:52Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:4c4b7964fefec1e9a9f0f05cf6b95f711543f9c9d2b59c4c25d48a023be89135
+        generation: 1
+        image: sha256:4c4b7964fefec1e9a9f0f05cf6b95f711543f9c9d2b59c4c25d48a023be89135
+      - created: 2018-03-28T17:30:37Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:dc8b0f9677c664dd533a9adbb42333c5f5d9be0c4c0b5c4d91fd5a9700afc693
+        generation: 1
+        image: sha256:dc8b0f9677c664dd533a9adbb42333c5f5d9be0c4c0b5c4d91fd5a9700afc693
+      - created: 2018-03-27T17:43:03Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:0a4f4e419036e36871cb04d6fb6d6ca6ecc5532eb4509fbc577c790ab9209593
+        generation: 1
+        image: sha256:0a4f4e419036e36871cb04d6fb6d6ca6ecc5532eb4509fbc577c790ab9209593
+      - created: 2018-03-22T12:05:39Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:2251e30a4db07cdc1f48b75f6c672f273a03ef2747e1ca1e0c5a575bfe104a37
+        generation: 1
+        image: sha256:2251e30a4db07cdc1f48b75f6c672f273a03ef2747e1ca1e0c5a575bfe104a37
+      - created: 2018-03-20T18:52:56Z
+        dockerImageReference: docker-registry.default.svc:5000/appname/api@sha256:b21ff01c37adbd76eb7c27ef23869badbd9267391e7715009ec3a82fad1f0570
+        generation: 1
+        image: sha256:b21ff01c37adbd76eb7c27ef23869badbd9267391e7715009ec3a82fad1f0570
+      tag: latest
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+      openshift.io/host.generated: "true"
+    creationTimestamp: 2018-03-20T18:41:06Z
+    labels:
+      app: api
+    name: api
+    namespace: appname
+    resourceVersion: "879607066"
+    selfLink: /apis/route.openshift.io/v1/namespaces/appname/routes/api
+    uid: 3fa6addc-2c6e-11e8-838f-02d8407159d1
+  spec:
+    host: appname.193b.starter-ca-central-1.openshiftapps.com
+    port:
+      targetPort: 8080-tcp
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: api
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-08-14T02:14:25Z
+        status: "True"
+        type: Admitted
+      host: appname.193b.starter-ca-central-1.openshiftapps.com
+      routerCanonicalHostname: elb.193b.starter-ca-central-1.openshiftapps.com
+      routerName: router
+      wildcardPolicy: None
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

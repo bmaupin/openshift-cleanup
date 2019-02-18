@@ -1,0 +1,233 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: api
+    name: api
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      targetPort: 8080
+    selector:
+      deploymentconfig: api
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+    labels:
+      app: postgresql-persistent
+      template: postgresql-persistent-template
+    name: postgresql
+  spec:
+    ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
+    selector:
+      name: postgresql
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: api
+    name: api
+  spec:
+    replicas: 2
+    selector:
+      deploymentconfig: api
+    strategy:
+      rollingParams:
+        maxSurge: 0
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: api
+          deploymentconfig: api
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          - name: NODE_ENV
+            value: production
+          image: docker-registry.default.svc:5000/appname/api@sha256:6a42dcdf0045e074ce1fa0e70df4cb2a1249757dd7220dd116d78c1939b9dd6a
+          imagePullPolicy: Always
+          name: api
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 256Mi
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - api
+        from:
+          kind: ImageStreamTag
+          name: api:latest
+          namespace: appname
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    labels:
+      app: postgresql-persistent
+      template: postgresql-persistent-template
+    name: postgresql
+  spec:
+    replicas: 1
+    selector:
+      name: postgresql
+    strategy:
+      recreateParams:
+        timeoutSeconds: 600
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            value: appname
+          - name: POSTGRESQL_PASSWORD
+            value: QokiDbLoMq6rh3MM
+          - name: POSTGRESQL_DATABASE
+            value: appname
+          image: docker-registry.default.svc:5000/openshift/postgresql@sha256:62a42216cb66e00cfcc66a28a6fb9a9953f2aed8592c4fd5140ddfa5b2193193
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: postgresql
+          ports:
+          - containerPort: 5432
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                'SELECT 1'
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: postgresql-data
+        volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.6
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: api
+    name: api
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: api:latest
+    source:
+      git:
+        ref: master
+        uri: https://github.com/some/repo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+      type: Source
+    triggers:
+    - generic:
+        secret: 6342148d13e46fca
+      type: Generic
+    - github:
+        secret: 1fa9b31766f37a8a
+      type: GitHub
+    - imageChange:
+        lastTriggeredImageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:1a42ca9592ea96f1d9b6042cab05191e68ba7759e98b25334bd6af04cd028b35
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: api
+    name: api
+  spec: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: api
+    name: api
+  spec:
+    host: appname.193b.starter-ca-central-1.openshiftapps.com
+    port:
+      targetPort: 8080-tcp
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: api
+kind: List
