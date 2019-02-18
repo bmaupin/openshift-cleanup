@@ -1,0 +1,501 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: nodejs-ex
+      openshift.io/deployment.name: nodejs-ex-1
+      openshift.io/scc: restricted
+    creationTimestamp: 2019-02-18T14:04:51Z
+    generateName: nodejs-ex-1-
+    labels:
+      app: nodejs-ex
+      deployment: nodejs-ex-1
+      deploymentconfig: nodejs-ex
+    name: nodejs-ex-1-lf8lt
+    namespace: playground
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: nodejs-ex-1
+      uid: 272a1ee4-3386-11e9-86f9-005056836ad3
+    resourceVersion: "33210860"
+    selfLink: /api/v1/namespaces/playground/pods/nodejs-ex-1-lf8lt
+    uid: 28d45c86-3386-11e9-86f9-005056836ad3
+  spec:
+    containers:
+    - image: docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+      imagePullPolicy: Always
+      name: nodejs-ex
+      ports:
+      - containerPort: 8080
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        runAsUser: 1000700000
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-rbl8v
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-gvnlx
+    nodeName: node1.example.org
+    nodeSelector:
+      node-role.kubernetes.io/compute: "true"
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000700000
+      seLinuxOptions:
+        level: s0:c26,c25
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - name: default-token-rbl8v
+      secret:
+        defaultMode: 420
+        secretName: default-token-rbl8v
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: 2019-02-18T14:04:51Z
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: 2019-02-18T14:04:54Z
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: 2019-02-18T14:04:51Z
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: docker://829bb9a9052f4471a69630579061db174fb00944f92a8758f0c662971284be54
+      image: docker-registry.default.svc:5000/playground/nodejs-ex:latest
+      imageID: docker-pullable://docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+      lastState: {}
+      name: nodejs-ex
+      ready: true
+      restartCount: 0
+      state:
+        running:
+          startedAt: 2019-02-18T14:04:54Z
+    hostIP: 172.27.43.72
+    phase: Running
+    podIP: 10.11.3.85
+    qosClass: BestEffort
+    startTime: 2019-02-18T14:04:51Z
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2019-02-18 14:04:54 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2019-02-18 14:04:48 +0000 UTC
+      openshift.io/deployer-pod.name: nodejs-ex-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: nodejs-ex
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"nodejs-ex","namespace":"playground","selfLink":"/apis/apps.openshift.io/v1/namespaces/playground/deploymentconfigs/nodejs-ex","uid":"0b6d5a31-3386-11e9-86f9-005056836ad3","resourceVersion":"33210814","generation":2,"creationTimestamp":"2019-02-18T14:04:02Z","labels":{"app":"nodejs-ex"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["nodejs-ex"],"from":{"kind":"ImageStreamTag","namespace":"playground","name":"nodejs-ex:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentconfig":"nodejs-ex"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"nodejs-ex","deploymentconfig":"nodejs-ex"}},"spec":{"containers":[{"name":"nodejs-ex","image":"docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7","ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2019-02-18T14:04:02Z","lastTransitionTime":"2019-02-18T14:04:02Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: 2019-02-18T14:04:48Z
+    generation: 2
+    labels:
+      app: nodejs-ex
+      openshift.io/deployment-config.name: nodejs-ex
+    name: nodejs-ex-1
+    namespace: playground
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: nodejs-ex
+      uid: 0b6d5a31-3386-11e9-86f9-005056836ad3
+    resourceVersion: "33210867"
+    selfLink: /api/v1/namespaces/playground/replicationcontrollers/nodejs-ex-1
+    uid: 272a1ee4-3386-11e9-86f9-005056836ad3
+  spec:
+    replicas: 1
+    selector:
+      deployment: nodejs-ex-1
+      deploymentconfig: nodejs-ex
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: nodejs-ex
+          openshift.io/deployment.name: nodejs-ex-1
+        creationTimestamp: null
+        labels:
+          app: nodejs-ex
+          deployment: nodejs-ex-1
+          deploymentconfig: nodejs-ex
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+          imagePullPolicy: Always
+          name: nodejs-ex
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2019-02-18T14:04:02Z
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    resourceVersion: "33210682"
+    selfLink: /api/v1/namespaces/playground/services/nodejs-ex
+    uid: 0b6f6818-3386-11e9-86f9-005056836ad3
+  spec:
+    clusterIP: 172.30.206.245
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: nodejs-ex
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2019-02-18T14:04:02Z
+    generation: 2
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    resourceVersion: "33210869"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/playground/deploymentconfigs/nodejs-ex
+    uid: 0b6d5a31-3386-11e9-86f9-005056836ad3
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: nodejs-ex
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: nodejs-ex
+          deploymentconfig: nodejs-ex
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+          imagePullPolicy: Always
+          name: nodejs-ex
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - nodejs-ex
+        from:
+          kind: ImageStreamTag
+          name: nodejs-ex:latest
+          namespace: playground
+        lastTriggeredImage: docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2019-02-18T14:04:54Z
+      lastUpdateTime: 2019-02-18T14:04:54Z
+      message: Deployment config has minimum availability.
+      status: "True"
+      type: Available
+    - lastTransitionTime: 2019-02-18T14:04:55Z
+      lastUpdateTime: 2019-02-18T14:04:55Z
+      message: replication controller "nodejs-ex-1" successfully rolled out
+      reason: NewReplicationControllerAvailable
+      status: "True"
+      type: Progressing
+    details:
+      causes:
+      - type: ConfigChange
+      message: config change
+    latestVersion: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    unavailableReplicas: 0
+    updatedReplicas: 1
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2019-02-18T14:04:02Z
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    resourceVersion: "33210688"
+    selfLink: /apis/build.openshift.io/v1/namespaces/playground/buildconfigs/nodejs-ex
+    uid: 0b6fbe6a-3386-11e9-86f9-005056836ad3
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: nodejs-ex:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        ref: master
+        uri: https://github.com/openshift/nodejs-ex.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+      type: Source
+    triggers:
+    - imageChange:
+        lastTriggeredImageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:a94f8c03e73a444f9d17d4e34c71c58309e4d2058e1b247c904863b06384d0bd
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 115c3b57b6cc816f
+      type: Generic
+    - github:
+        secret: 92597bfedce0e184
+      type: GitHub
+  status:
+    lastVersion: 1
+- apiVersion: build.openshift.io/v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: nodejs-ex
+      openshift.io/build.number: "1"
+      openshift.io/build.pod-name: nodejs-ex-1-build
+    creationTimestamp: 2019-02-18T14:04:02Z
+    labels:
+      app: nodejs-ex
+      buildconfig: nodejs-ex
+      openshift.io/build-config.name: nodejs-ex
+      openshift.io/build.start-policy: Serial
+    name: nodejs-ex-1
+    namespace: playground
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: nodejs-ex
+      uid: 0b6fbe6a-3386-11e9-86f9-005056836ad3
+    resourceVersion: "33210832"
+    selfLink: /apis/build.openshift.io/v1/namespaces/playground/builds/nodejs-ex-1
+    uid: 0b80bdcf-3386-11e9-86f9-005056836ad3
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-kz5wf
+      to:
+        kind: ImageStreamTag
+        name: nodejs-ex:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: hhorak@redhat.com
+          name: Honza Horak
+        commit: e59fe7571f883db2ae2e53d555aef6d145c6f032
+        committer:
+          email: noreply@github.com
+          name: GitHub
+        message: 'Merge pull request #206 from liangxia/okd'
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        ref: master
+        uri: https://github.com/openshift/nodejs-ex.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker-registry.default.svc:5000/openshift/nodejs@sha256:a94f8c03e73a444f9d17d4e34c71c58309e4d2058e1b247c904863b06384d0bd
+        pullSecret:
+          name: builder-dockercfg-kz5wf
+      type: Source
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+        imageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:a94f8c03e73a444f9d17d4e34c71c58309e4d2058e1b247c904863b06384d0bd
+      message: Image change
+  status:
+    completionTimestamp: 2019-02-18T14:04:49Z
+    config:
+      kind: BuildConfig
+      name: nodejs-ex
+      namespace: playground
+    duration: 47000000000
+    output:
+      to:
+        imageDigest: sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+    outputDockerImageReference: docker-registry.default.svc:5000/playground/nodejs-ex:latest
+    phase: Complete
+    stages:
+    - durationMilliseconds: 2620
+      name: FetchInputs
+      startTime: 2019-02-18T14:04:06Z
+      steps:
+      - durationMilliseconds: 2620
+        name: FetchGitSource
+        startTime: 2019-02-18T14:04:06Z
+    - durationMilliseconds: 717
+      name: CommitContainer
+      startTime: 2019-02-18T14:04:24Z
+      steps:
+      - durationMilliseconds: 717
+        name: CommitContainer
+        startTime: 2019-02-18T14:04:24Z
+    - durationMilliseconds: 13392
+      name: Assemble
+      startTime: 2019-02-18T14:04:12Z
+      steps:
+      - durationMilliseconds: 13392
+        name: AssembleBuildScripts
+        startTime: 2019-02-18T14:04:12Z
+    - durationMilliseconds: 23071
+      name: PushImage
+      startTime: 2019-02-18T14:04:25Z
+      steps:
+      - durationMilliseconds: 23071
+        name: PushImage
+        startTime: 2019-02-18T14:04:25Z
+    startTimestamp: 2019-02-18T14:04:02Z
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: 2019-02-18T14:04:02Z
+    generation: 1
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    resourceVersion: "33210811"
+    selfLink: /apis/image.openshift.io/v1/namespaces/playground/imagestreams/nodejs-ex
+    uid: 0b6d8912-3386-11e9-86f9-005056836ad3
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: docker-registry.default.svc:5000/playground/nodejs-ex
+    tags:
+    - items:
+      - created: 2019-02-18T14:04:48Z
+        dockerImageReference: docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+        generation: 1
+        image: sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+      tag: latest
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+      openshift.io/host.generated: "true"
+    creationTimestamp: 2019-02-18T14:04:02Z
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    resourceVersion: "33210685"
+    selfLink: /apis/route.openshift.io/v1/namespaces/playground/routes/nodejs-ex
+    uid: 0b6d9fd3-3386-11e9-86f9-005056836ad3
+  spec:
+    host: nodejs-ex-playground.example.org
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: nodejs-ex
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2019-02-18T14:04:02Z
+        status: "True"
+        type: Admitted
+      host: nodejs-ex-playground.example.org
+      routerName: router
+      wildcardPolicy: None
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

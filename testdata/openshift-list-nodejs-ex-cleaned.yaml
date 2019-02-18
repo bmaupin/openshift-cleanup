@@ -1,0 +1,118 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    uid: 0b6f6818-3386-11e9-86f9-005056836ad3
+  spec:
+    clusterIP: 172.30.206.245
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: nodejs-ex
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    uid: 0b6d5a31-3386-11e9-86f9-005056836ad3
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: nodejs-ex
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: nodejs-ex
+          deploymentconfig: nodejs-ex
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/playground/nodejs-ex@sha256:bbaed878305f2273fea9cdeacd117b0b6cda2af8ac8e3afd5733133e9d3104c7
+          imagePullPolicy: Always
+          name: nodejs-ex
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - nodejs-ex
+        from:
+          kind: ImageStreamTag
+          name: nodejs-ex:latest
+          namespace: playground
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    uid: 0b6fbe6a-3386-11e9-86f9-005056836ad3
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: nodejs-ex:latest
+    source:
+      git:
+        ref: master
+        uri: https://github.com/openshift/nodejs-ex.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+      type: Source
+    triggers:
+    - imageChange:
+        lastTriggeredImageID: docker-registry.default.svc:5000/openshift/nodejs@sha256:a94f8c03e73a444f9d17d4e34c71c58309e4d2058e1b247c904863b06384d0bd
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 115c3b57b6cc816f
+      type: Generic
+    - github:
+        secret: 92597bfedce0e184
+      type: GitHub
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    uid: 0b6d8912-3386-11e9-86f9-005056836ad3
+  spec: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: nodejs-ex
+    name: nodejs-ex
+    namespace: playground
+    uid: 0b6d9fd3-3386-11e9-86f9-005056836ad3
+  spec:
+    host: nodejs-ex-playground.example.org
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: nodejs-ex
+kind: List
