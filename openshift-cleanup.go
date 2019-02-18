@@ -218,6 +218,14 @@ func cleanPodSpec(podSpec map[interface{}]interface{}) map[interface{}]interface
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-container
 func cleanContainer(container map[interface{}]interface{}) map[interface{}]interface{} {
+	// ports is an optional parameter
+	if val, ok := container["ports"]; ok {
+		ports := val.([]interface{})
+		for _, port := range ports {
+			deleteKeyIfValueMatches(port.(map[interface{}]interface{}), "protocol", "TCP")
+		}
+	}
+
 	deleteKeyIfEmpty(container, "resources")
 	deleteKeyIfValueMatches(container, "terminationMessagePath", "/dev/termination-log")
 	deleteKeyIfValueMatches(container, "terminationMessagePolicy", "File")
@@ -290,6 +298,15 @@ func cleanService(service map[interface{}]interface{}) map[interface{}]interface
 	service = cleanOpenshiftObject(service)
 
 	serviceSpec := service["spec"].(map[interface{}]interface{})
+
+	// ports is an optional parameter
+	if val, ok := serviceSpec["ports"]; ok {
+		ports := val.([]interface{})
+		for _, port := range ports {
+			deleteKeyIfValueMatches(port.(map[interface{}]interface{}), "protocol", "TCP")
+		}
+	}
+
 	deleteKeyIfValueMatches(serviceSpec, "sessionAffinity", "None")
 	deleteKeyIfValueMatches(serviceSpec, "type", "ClusterIP")
 

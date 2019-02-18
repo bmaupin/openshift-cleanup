@@ -13,7 +13,6 @@ objects:
     ports:
     - name: 3000-tcp
       port: 3000
-      protocol: TCP
       targetPort: 3000
     selector:
       app: appname
@@ -46,7 +45,6 @@ objects:
           name: appname
           ports:
           - containerPort: 3000
-            protocol: TCP
     triggers:
     - imageChangeParams:
         automatic: true

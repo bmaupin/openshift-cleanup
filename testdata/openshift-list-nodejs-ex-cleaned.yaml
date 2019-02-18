@@ -13,7 +13,6 @@ items:
     ports:
     - name: 8080-tcp
       port: 8080
-      protocol: TCP
       targetPort: 8080
     selector:
       deploymentconfig: nodejs-ex
@@ -43,7 +42,6 @@ items:
           name: nodejs-ex
           ports:
           - containerPort: 8080
-            protocol: TCP
     triggers:
     - imageChangeParams:
         automatic: true
