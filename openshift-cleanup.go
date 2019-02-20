@@ -218,7 +218,8 @@ func cleanPodSpec(podSpec map[interface{}]interface{}) map[interface{}]interface
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-container
 func cleanContainer(container map[interface{}]interface{}) map[interface{}]interface{} {
-	// ports is an optional parameter
+	deleteKeyIfEmpty(container, "capabilities")
+
 	if val, ok := container["ports"]; ok {
 		ports := val.([]interface{})
 		for _, port := range ports {
@@ -227,6 +228,14 @@ func cleanContainer(container map[interface{}]interface{}) map[interface{}]inter
 	}
 
 	deleteKeyIfEmpty(container, "resources")
+
+	if val, ok := container["securityContext"]; ok {
+		securityContext := val.(map[interface{}]interface{})
+		deleteKeyIfEmpty(securityContext, "capabilities")
+		deleteKeyIfValueMatches(securityContext, "privileged", false)
+	}
+	deleteKeyIfEmpty(container, "securityContext")
+
 	deleteKeyIfValueMatches(container, "terminationMessagePath", "/dev/termination-log")
 	deleteKeyIfValueMatches(container, "terminationMessagePolicy", "File")
 
@@ -277,6 +286,8 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 			}
 		}
 	}
+
+	deleteKeyIfEmpty(imageStream, "spec")
 
 	return imageStream
 }
