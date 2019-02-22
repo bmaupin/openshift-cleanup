@@ -175,6 +175,13 @@ func cleanDeploymentConfigSpec(deploymentConfigSpec map[interface{}]interface{})
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentstrategy
 func cleanDeploymentStrategy(deploymentStrategy map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfValueMatches(deploymentStrategy, "activeDeadlineSeconds", 21600)
+
+	if val, ok := deploymentStrategy["recreateParams"]; ok {
+		recreateParams := val.(map[interface{}]interface{})
+		deleteKeyIfValueMatches(recreateParams, "timeoutSeconds", 600)
+	}
+	deleteKeyIfEmpty(deploymentStrategy, "recreateParams")
+
 	deleteKeyIfEmpty(deploymentStrategy, "resources")
 
 	if val, ok := deploymentStrategy["rollingParams"]; ok {

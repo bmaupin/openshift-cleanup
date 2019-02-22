@@ -100,8 +100,6 @@ items:
     selector:
       name: postgresql
     strategy:
-      recreateParams:
-        timeoutSeconds: 600
       type: Recreate
     template:
       metadata:
