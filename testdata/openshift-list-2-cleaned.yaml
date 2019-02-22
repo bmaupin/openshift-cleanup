@@ -212,4 +212,17 @@ items:
     to:
       kind: Service
       name: api
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    labels:
+      app: postgresql-persistent
+      template: postgresql-persistent-template
+    name: postgresql
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
 kind: List

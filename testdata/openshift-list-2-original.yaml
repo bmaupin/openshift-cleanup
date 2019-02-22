@@ -2022,6 +2022,38 @@ items:
       routerCanonicalHostname: elb.193b.starter-ca-central-1.openshiftapps.com
       routerName: router
       wildcardPolicy: None
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/aws-ebs
+    creationTimestamp: 2019-02-19T19:16:09Z
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: postgresql-persistent
+      template: postgresql-persistent-template
+    name: postgresql
+    namespace: project
+    resourceVersion: "3843154934"
+    selfLink: /api/v1/namespaces/project/persistentvolumeclaims/postgresql
+    uid: d01f0536-347a-11e9-88ec-12d641ec7610
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    storageClassName: gp2-encrypted
+    volumeName: pvc-d01f0536-347a-11e9-88ec-12d641ec7610
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 1Gi
+    phase: Bound
 kind: List
 metadata:
   resourceVersion: ""

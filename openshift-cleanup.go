@@ -71,6 +71,9 @@ func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[inter
 		case "ImageStream":
 			object = cleanImageStream(object)
 			newChildObjects = append(newChildObjects, object)
+		case "PersistentVolumeClaim":
+			object = cleanPersistentVolumeClaim(object)
+			newChildObjects = append(newChildObjects, object)
 		case "Route":
 			object = cleanRoute(object)
 			newChildObjects = append(newChildObjects, object)
@@ -318,6 +321,16 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 	return imageStream
 }
 
+func cleanPersistentVolumeClaim(persistentVolumeClaim map[interface{}]interface{}) map[interface{}]interface{} {
+	persistentVolumeClaim = cleanOpenshiftObject(persistentVolumeClaim)
+
+	persistentVolumeClaimSpec := persistentVolumeClaim["spec"].(map[interface{}]interface{})
+	delete(persistentVolumeClaimSpec, "storageClassName")
+	delete(persistentVolumeClaimSpec, "volumeName")
+
+	return persistentVolumeClaim
+}
+
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-route
 func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
 	route = cleanOpenshiftObject(route)
@@ -371,6 +384,7 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 	}
 
 	delete(metadata, "creationTimestamp")
+	delete(metadata, "finalizers")
 	// "Populated by the system. Read-only."
 	delete(metadata, "generation")
 	// Namespace can be removed because it can be specified via a parameter to oc create
@@ -393,6 +407,9 @@ func cleanAnnotations(annotations map[interface{}]interface{}) map[interface{}]i
 		"openshift.io/host.generated",
 		"openshift.io/image.dockerRepositoryCheck",
 		"openshift.io/imported-from",
+		"pv.kubernetes.io/bind-completed",
+		"pv.kubernetes.io/bound-by-controller",
+		"volume.beta.kubernetes.io/storage-provisioner",
 	}
 
 	for _, annotationToDelete := range annotationsToDelete {
