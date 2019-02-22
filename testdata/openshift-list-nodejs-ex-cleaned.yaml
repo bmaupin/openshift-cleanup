@@ -88,7 +88,6 @@ items:
     labels:
       app: nodejs-ex
     name: nodejs-ex
-  spec: {}
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:

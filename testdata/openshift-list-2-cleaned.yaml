@@ -153,9 +153,6 @@ items:
           resources:
             limits:
               memory: 512Mi
-          securityContext:
-            capabilities: {}
-            privileged: false
           volumeMounts:
           - mountPath: /var/lib/pgsql/data
             name: postgresql-data
@@ -214,7 +211,6 @@ items:
     labels:
       app: api
     name: api
-  spec: {}
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:

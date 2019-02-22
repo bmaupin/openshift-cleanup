@@ -156,9 +156,6 @@ objects:
           resources:
             limits:
               memory: 512Mi
-          securityContext:
-            capabilities: {}
-            privileged: false
           volumeMounts:
           - mountPath: /var/lib/pgsql/data
             name: postgresql-data
