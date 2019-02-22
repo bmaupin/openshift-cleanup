@@ -67,15 +67,11 @@ items:
           ports:
           - containerPort: 8080
           readinessProbe:
-            failureThreshold: 3
             httpGet:
               path: /
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 60
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
           resources:
             limits:
               memory: 256Mi
@@ -129,11 +125,7 @@ items:
               - -i
               - -c
               - pg_isready -h 127.0.0.1 -p 5432
-            failureThreshold: 3
             initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
           name: postgresql
           ports:
           - containerPort: 5432
@@ -145,11 +137,7 @@ items:
               - -c
               - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
                 'SELECT 1'
-            failureThreshold: 3
             initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
           resources:
             limits:
               memory: 512Mi

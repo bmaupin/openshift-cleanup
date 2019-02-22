@@ -219,12 +219,21 @@ func cleanPodSpec(podSpec map[interface{}]interface{}) map[interface{}]interface
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-container
 func cleanContainer(container map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfEmpty(container, "capabilities")
+	deleteKeyIfValueMatches(container, "image", " ")
+
+	if val, ok := container["livenessProbe"]; ok {
+		val = cleanProbe(val.(map[interface{}]interface{}))
+	}
 
 	if val, ok := container["ports"]; ok {
 		ports := val.([]interface{})
 		for _, port := range ports {
 			deleteKeyIfValueMatches(port.(map[interface{}]interface{}), "protocol", "TCP")
 		}
+	}
+
+	if val, ok := container["readinessProbe"]; ok {
+		val = cleanProbe(val.(map[interface{}]interface{}))
 	}
 
 	deleteKeyIfEmpty(container, "resources")
@@ -240,6 +249,16 @@ func cleanContainer(container map[interface{}]interface{}) map[interface{}]inter
 	deleteKeyIfValueMatches(container, "terminationMessagePolicy", "File")
 
 	return container
+}
+
+// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-probe
+func cleanProbe(probe map[interface{}]interface{}) map[interface{}]interface{} {
+	deleteKeyIfValueMatches(probe, "failureThreshold", 3)
+	deleteKeyIfValueMatches(probe, "periodSeconds", 10)
+	deleteKeyIfValueMatches(probe, "successThreshold", 1)
+	deleteKeyIfValueMatches(probe, "timeoutSeconds", 1)
+
+	return probe
 }
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymenttriggerpolicy
