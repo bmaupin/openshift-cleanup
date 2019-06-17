@@ -71,6 +71,9 @@ func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[inter
 		case "ImageStream":
 			object = cleanImageStream(object)
 			newChildObjects = append(newChildObjects, object)
+		case "Ingress":
+			object = cleanIngress(object)
+			newChildObjects = append(newChildObjects, object)
 		case "PersistentVolumeClaim":
 			object = cleanPersistentVolumeClaim(object)
 			newChildObjects = append(newChildObjects, object)
@@ -319,6 +322,10 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 	deleteKeyIfEmpty(imageStream, "spec")
 
 	return imageStream
+}
+
+func cleanIngress(ingress map[interface{}]interface{}) map[interface{}]interface{} {
+	return cleanOpenshiftObject(ingress)
 }
 
 func cleanPersistentVolumeClaim(persistentVolumeClaim map[interface{}]interface{}) map[interface{}]interface{} {

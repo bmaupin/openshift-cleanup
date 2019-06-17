@@ -1,0 +1,36 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+    labels:
+      app: review-pipeline-p-e7ejwv
+      chart: auto-deploy-app-0.2.9
+      heritage: Tiller
+      release: review-pipeline-p-e7ejwv
+    name: review-pipeline-p-e7ejwv-auto-deploy
+  spec:
+    rules:
+    - host: 386-review-pipeline-p-e7ejwv.openshift.example.org
+      http:
+        paths:
+        - backend:
+            serviceName: review-pipeline-p-e7ejwv-auto-deploy
+            servicePort: 5000
+          path: /
+    - host: le.openshift.example.org
+      http:
+        paths:
+        - backend:
+            serviceName: review-pipeline-p-e7ejwv-auto-deploy
+            servicePort: 5000
+          path: /
+    tls:
+    - hosts:
+      - le.openshift.example.org
+      - 386-review-pipeline-p-e7ejwv.openshift.example.org
+      secretName: review-pipeline-p-e7ejwv-auto-deploy-tls
+kind: List
