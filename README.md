@@ -43,11 +43,12 @@ $ ./openshift-cleanup configuration.yaml | wc -l
 
 1. Export the configuration
 
-    (Pick whichever one best suits your needs):
     ```
-    oc get all --export -o json > configuration-original.json
     oc get all --export -o yaml > configuration-original.yaml
-    oc get all --export -o json -l app=appname > configuration-original.json
+    ```
+
+    Or:
+    ```
     oc get all --export -o yaml -l app=appname > configuration-original.yaml
     ```
 
@@ -61,11 +62,6 @@ $ ./openshift-cleanup configuration.yaml | wc -l
 
     ```
     ./openshift-cleanup configuration-original.yaml > configuration.yaml
-    ```
-
-    Or:
-    ```
-    ./openshift-cleanup configuration-original.json > configuration.yaml
     ```
 
 1. (Optional) Perform any additional manual cleanup as desired (see below)
