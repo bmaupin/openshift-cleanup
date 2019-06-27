@@ -1,1 +1,6 @@
-vendor/
+/*.tar.gz
+/*.zip
+/.vscode/
+/openshift-cleanup
+/openshift-cleanup.exe
+/vendor/
