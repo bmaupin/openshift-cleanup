@@ -18,22 +18,24 @@ managed and optionally turned into a template.
 
 ### Examples
 
-Cleaning up the exported configuration from OpenShift's nodejs-ex example gives us a file that's nearly 5 times smaller:
+Cleaning up the exported configuration from OpenShift's nodejs-mongo-persistent template gives us a file that's over 5 times smaller:
 
 ```
-$ cat testdata/openshift-list-nodejs-ex-original.yaml | wc -l
-501
-$ ./openshift-cleanup testdata/openshift-list-nodejs-ex-original.yaml | wc -l
-105
+$ oc process openshift//nodejs-mongo-persistent | oc create -f -
+$ oc get all -o yaml > configuration.yaml && cat configuration.yaml | wc -l
+1345
+$ ./openshift-cleanup configuration.yaml | wc -l
+247
 ```
 
-Cleaning up the exported configuration from a deployed application with a database gives us a file that's nearly 8 times smaller:
+If the number of pods is scaled up the difference is even greater:
 
 ```
-$ cat testdata/openshift-list-2-original.yaml | wc -l
-2060
-$ ./openshift-cleanup testdata/openshift-list-2-original.yaml | wc -l
-265
+$ oc scale dc nodejs-mongo-persistent --replicas=3
+$ oc get all -o yaml > configuration.yaml && cat configuration.yaml | wc -l
+1660
+$ ./openshift-cleanup configuration.yaml | wc -l
+247
 ```
 
 
