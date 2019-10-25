@@ -14,6 +14,8 @@ func TestIngressCleanup(t *testing.T) {
 
 	cleanedContents := cleanOpenshiftConfigFile("testdata/ingress-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
+		t.Logf("Expected: \n%s", string(testContents))
+		t.Logf("Received: \n%s", string(cleanedContents))
 		t.Error("Cleaned list contents don't match")
 	}
 }
@@ -26,6 +28,8 @@ func TestListCleanup1(t *testing.T) {
 
 	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-1-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
+		t.Logf("Expected: \n%s", string(testContents))
+		t.Logf("Received: \n%s", string(cleanedContents))
 		t.Error("Cleaned list contents don't match")
 	}
 }
@@ -38,6 +42,8 @@ func TestListCleanup2(t *testing.T) {
 
 	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-2-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
+		t.Logf("Expected: \n%s", string(testContents))
+		t.Logf("Received: \n%s", string(cleanedContents))
 		t.Error("Cleaned list contents don't match")
 	}
 }
@@ -50,6 +56,8 @@ func TestListCleanupNodejsEx(t *testing.T) {
 
 	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-nodejs-ex-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
+		t.Logf("Expected: \n%s", string(testContents))
+		t.Logf("Received: \n%s", string(cleanedContents))
 		t.Error("Cleaned list contents don't match")
 	}
 }
@@ -62,6 +70,8 @@ func TestListCleanupNodejsExJson(t *testing.T) {
 
 	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-nodejs-ex-original.json")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
+		t.Logf("Expected: \n%s", string(testContents))
+		t.Logf("Received: \n%s", string(cleanedContents))
 		t.Error("Cleaned list contents don't match")
 	}
 }
