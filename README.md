@@ -68,7 +68,7 @@ $ ./openshift-cleanup configuration.yaml | wc -l
 
 1. (Optional) Parameterize the configs and convert into a template
 
-    [https://docs.openshift.com/container-platform/latest/dev_guide/templates.html](https://docs.openshift.com/container-platform/latest/dev_guide/templates.html)
+    [https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html#templates-writing_using-templates](https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html#templates-writing_using-templates)
 
 
 ### Additional manual cleanup
