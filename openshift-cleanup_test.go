@@ -20,6 +20,20 @@ func TestIngressCleanup(t *testing.T) {
 	}
 }
 
+func TestSecretCleanup(t *testing.T) {
+	testContents, err := ioutil.ReadFile("testdata/secret-cleaned.yaml")
+	if err != nil {
+		t.Errorf("Unexpected error reading test data file: %s", err)
+	}
+
+	cleanedContents := cleanOpenshiftConfigFile("testdata/secret-original.yaml")
+	if bytes.Compare(cleanedContents, testContents) != 0 {
+		t.Logf("Expected: \n%s", string(testContents))
+		t.Logf("Received: \n%s", string(cleanedContents))
+		t.Error("Cleaned list contents don't match")
+	}
+}
+
 func TestListCleanup1(t *testing.T) {
 	testContents, err := ioutil.ReadFile("testdata/openshift-list-1-cleaned.yaml")
 	if err != nil {

@@ -80,6 +80,9 @@ func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[inter
 		case "Route":
 			object = cleanRoute(object)
 			newChildObjects = append(newChildObjects, object)
+		case "Secret":
+			object = cleanSecret(object)
+			newChildObjects = append(newChildObjects, object)
 		case "Service":
 			object = cleanService(object)
 			newChildObjects = append(newChildObjects, object)
@@ -348,6 +351,14 @@ func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
 	deleteKeyIfValueMatches(routeSpec, "wildcardPolicy", "None")
 
 	return route
+}
+
+func cleanSecret(secret map[interface{}]interface{}) map[interface{}]interface{} {
+	secret = cleanOpenshiftObject(secret)
+
+	deleteKeyIfValueMatches(secret, "type", "Opaque")
+
+	return secret
 }
 
 // https://kubernetes.io/docs/reference/federation/v1/definitions/#_v1_service
