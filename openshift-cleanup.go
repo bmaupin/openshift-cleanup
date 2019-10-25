@@ -56,48 +56,15 @@ func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[inter
 	// https://github.com/openshift/origin/blob/master/pkg/template/apis/template/types.go
 	case "Template":
 		listKey = "objects"
+	default:
+		return cleanOpenshiftObject(openshiftConfig)
 	}
 
 	for _, object := range openshiftConfig[listKey].([]interface{}) {
 		object := object.(map[interface{}]interface{})
+		object = cleanOpenshiftObject(object)
 
-		switch object["kind"] {
-		case "BuildConfig":
-			object = cleanBuildConfig(object)
-			newChildObjects = append(newChildObjects, object)
-		case "DeploymentConfig":
-			object = cleanDeploymentConfig(object)
-			newChildObjects = append(newChildObjects, object)
-		case "ImageStream":
-			object = cleanImageStream(object)
-			newChildObjects = append(newChildObjects, object)
-		case "Ingress":
-			object = cleanIngress(object)
-			newChildObjects = append(newChildObjects, object)
-		case "PersistentVolumeClaim":
-			object = cleanPersistentVolumeClaim(object)
-			newChildObjects = append(newChildObjects, object)
-		case "Route":
-			object = cleanRoute(object)
-			newChildObjects = append(newChildObjects, object)
-		case "Secret":
-			object = cleanSecret(object)
-			newChildObjects = append(newChildObjects, object)
-		case "Service":
-			object = cleanService(object)
-			newChildObjects = append(newChildObjects, object)
-
-		// Builds will be recreated by the BuildConfig
-		case "Build":
-			continue
-		// Pods will be recreated by the DeploymentConfig
-		case "Pod":
-			continue
-		case "ReplicationController":
-			continue
-
-		default:
-			log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", object["kind"]))
+		if object != nil {
 			newChildObjects = append(newChildObjects, object)
 		}
 	}
@@ -107,9 +74,44 @@ func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[inter
 	return openshiftConfig
 }
 
+func cleanOpenshiftObject(object map[interface{}]interface{}) map[interface{}]interface{} {
+	switch object["kind"] {
+	case "BuildConfig":
+		object = cleanBuildConfig(object)
+	case "DeploymentConfig":
+		object = cleanDeploymentConfig(object)
+	case "ImageStream":
+		object = cleanImageStream(object)
+	case "Ingress":
+		object = cleanIngress(object)
+	case "PersistentVolumeClaim":
+		object = cleanPersistentVolumeClaim(object)
+	case "Route":
+		object = cleanRoute(object)
+	case "Secret":
+		object = cleanSecret(object)
+	case "Service":
+		object = cleanService(object)
+
+	// Builds will be recreated by the BuildConfig
+	case "Build":
+		return nil
+	// Pods will be recreated by the DeploymentConfig
+	case "Pod":
+		return nil
+	case "ReplicationController":
+		return nil
+
+	default:
+		log.Println(fmt.Sprintf("WARNING: Unhandled object kind: %s", object["kind"]))
+	}
+
+	return object
+}
+
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-buildconfig
 func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	buildConfig = cleanOpenshiftObject(buildConfig)
+	buildConfig = cleanGenericOpenshiftObject(buildConfig)
 	buildConfig = cleanBuildConfigSpec(buildConfig)
 
 	return buildConfig
@@ -153,7 +155,7 @@ func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentconfig
 func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	deploymentConfig = cleanOpenshiftObject(deploymentConfig)
+	deploymentConfig = cleanGenericOpenshiftObject(deploymentConfig)
 	deploymentConfigSpec := deploymentConfig["spec"].(map[interface{}]interface{})
 	deploymentConfigSpec = cleanDeploymentConfigSpec(deploymentConfigSpec)
 
@@ -289,7 +291,7 @@ func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[i
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-imagestream
 func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]interface{} {
-	imageStream = cleanOpenshiftObject(imageStream)
+	imageStream = cleanGenericOpenshiftObject(imageStream)
 
 	imageStreamSpec := imageStream["spec"].(map[interface{}]interface{})
 
@@ -328,11 +330,11 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 }
 
 func cleanIngress(ingress map[interface{}]interface{}) map[interface{}]interface{} {
-	return cleanOpenshiftObject(ingress)
+	return cleanGenericOpenshiftObject(ingress)
 }
 
 func cleanPersistentVolumeClaim(persistentVolumeClaim map[interface{}]interface{}) map[interface{}]interface{} {
-	persistentVolumeClaim = cleanOpenshiftObject(persistentVolumeClaim)
+	persistentVolumeClaim = cleanGenericOpenshiftObject(persistentVolumeClaim)
 
 	persistentVolumeClaimSpec := persistentVolumeClaim["spec"].(map[interface{}]interface{})
 	delete(persistentVolumeClaimSpec, "storageClassName")
@@ -343,7 +345,7 @@ func cleanPersistentVolumeClaim(persistentVolumeClaim map[interface{}]interface{
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-route
 func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
-	route = cleanOpenshiftObject(route)
+	route = cleanGenericOpenshiftObject(route)
 
 	routeSpec := route["spec"].(map[interface{}]interface{})
 	routeSpecTo := routeSpec["to"].(map[interface{}]interface{})
@@ -354,7 +356,7 @@ func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
 }
 
 func cleanSecret(secret map[interface{}]interface{}) map[interface{}]interface{} {
-	secret = cleanOpenshiftObject(secret)
+	secret = cleanGenericOpenshiftObject(secret)
 
 	deleteKeyIfValueMatches(secret, "type", "Opaque")
 
@@ -363,7 +365,7 @@ func cleanSecret(secret map[interface{}]interface{}) map[interface{}]interface{}
 
 // https://kubernetes.io/docs/reference/federation/v1/definitions/#_v1_service
 func cleanService(service map[interface{}]interface{}) map[interface{}]interface{} {
-	service = cleanOpenshiftObject(service)
+	service = cleanGenericOpenshiftObject(service)
 
 	serviceSpec := service["spec"].(map[interface{}]interface{})
 	// This is usually assigned randomly by the master
@@ -383,7 +385,7 @@ func cleanService(service map[interface{}]interface{}) map[interface{}]interface
 	return service
 }
 
-func cleanOpenshiftObject(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
+func cleanGenericOpenshiftObject(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
 	openshiftObject = cleanMetadata(openshiftObject)
 
 	// Status properties across different objects are populated by the server

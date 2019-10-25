@@ -1,47 +1,41 @@
-apiVersion: v1
-items:
-- apiVersion: extensions/v1beta1
-  kind: Ingress
-  metadata:
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
-    creationTimestamp: 2019-06-17T13:00:59Z
-    generation: 1
-    labels:
-      app: review-pipeline-p-e7ejwv
-      chart: auto-deploy-app-0.2.9
-      heritage: Tiller
-      release: review-pipeline-p-e7ejwv
-    name: review-pipeline-p-e7ejwv-auto-deploy
-    namespace: appname
-    resourceVersion: "57234440"
-    selfLink: /apis/extensions/v1beta1/namespaces/appname/ingresses/review-pipeline-p-e7ejwv-auto-deploy
-    uid: f40a519d-90ff-11e9-b395-005056836ad3
-  spec:
-    rules:
-    - host: 386-review-pipeline-p-e7ejwv.openshift.example.org
-      http:
-        paths:
-        - backend:
-            serviceName: review-pipeline-p-e7ejwv-auto-deploy
-            servicePort: 5000
-          path: /
-    - host: le.openshift.example.org
-      http:
-        paths:
-        - backend:
-            serviceName: review-pipeline-p-e7ejwv-auto-deploy
-            servicePort: 5000
-          path: /
-    tls:
-    - hosts:
-      - le.openshift.example.org
-      - 386-review-pipeline-p-e7ejwv.openshift.example.org
-      secretName: review-pipeline-p-e7ejwv-auto-deploy-tls
-  status:
-    loadBalancer: {}
-kind: List
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  resourceVersion: ""
-  selfLink: ""
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  creationTimestamp: 2019-06-17T13:00:59Z
+  generation: 1
+  labels:
+    app: review-pipeline-p-e7ejwv
+    chart: auto-deploy-app-0.2.9
+    heritage: Tiller
+    release: review-pipeline-p-e7ejwv
+  name: review-pipeline-p-e7ejwv-auto-deploy
+  namespace: appname
+  resourceVersion: "57234440"
+  selfLink: /apis/extensions/v1beta1/namespaces/appname/ingresses/review-pipeline-p-e7ejwv-auto-deploy
+  uid: f40a519d-90ff-11e9-b395-005056836ad3
+spec:
+  rules:
+  - host: 386-review-pipeline-p-e7ejwv.openshift.example.org
+    http:
+      paths:
+      - backend:
+          serviceName: review-pipeline-p-e7ejwv-auto-deploy
+          servicePort: 5000
+        path: /
+  - host: le.openshift.example.org
+    http:
+      paths:
+      - backend:
+          serviceName: review-pipeline-p-e7ejwv-auto-deploy
+          servicePort: 5000
+        path: /
+  tls:
+  - hosts:
+    - le.openshift.example.org
+    - 386-review-pipeline-p-e7ejwv.openshift.example.org
+    secretName: review-pipeline-p-e7ejwv-auto-deploy-tls
+status:
+  loadBalancer: {}
