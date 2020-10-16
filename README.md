@@ -1,8 +1,8 @@
-[![CircleCI](https://circleci.com/gh/bmaupin/openshift-cleanup.svg?style=shield)](https://circleci.com/gh/bmaupin/openshift-cleanup)
-[![License](https://img.shields.io/badge/license-Apache_2-blue.svg)](https://github.com/bmaupin/openshift-cleanup/blob/master/LICENSE)
+[![CircleCI](https://circleci.com/gh/bmaupin/kleanup.svg?style=shield)](https://circleci.com/gh/bmaupin/kleanup)
+[![License](https://img.shields.io/badge/license-Apache_2-blue.svg)](https://github.com/bmaupin/kleanup/blob/master/LICENSE)
 ---
 
-This removes unnecessary objects and parameters from an exported OpenShift configuration so that it can be more easily
+This removes unnecessary objects and parameters from an exported Kubernetes or OpenShift configuration so that it can be more easily
 managed and optionally turned into a template.
 
 
@@ -22,19 +22,19 @@ Cleaning up the exported configuration from OpenShift's nodejs-mongo-persistent 
 
 ```
 $ oc process openshift//nodejs-mongo-persistent | oc create -f -
-$ oc get all -o yaml > configuration.yaml && cat configuration.yaml | wc -l
+$ kubectl get all -o yaml > configuration.yaml && cat configuration.yaml | wc -l
 1345
-$ ./openshift-cleanup configuration.yaml | wc -l
+$ ./kleanup configuration.yaml | wc -l
 247
 ```
 
 If the number of pods is scaled up the difference is even greater:
 
 ```
-$ oc scale dc nodejs-mongo-persistent --replicas=3
-$ oc get all -o yaml > configuration.yaml && cat configuration.yaml | wc -l
+$ kubectl scale dc nodejs-mongo-persistent --replicas=3
+$ kubectl get all -o yaml > configuration.yaml && cat configuration.yaml | wc -l
 1660
-$ ./openshift-cleanup configuration.yaml | wc -l
+$ ./kleanup configuration.yaml | wc -l
 247
 ```
 
@@ -44,31 +44,29 @@ $ ./openshift-cleanup configuration.yaml | wc -l
 1. Export the configuration
 
     ```
-    oc get all --export -o yaml > configuration-original.yaml
+    kubectl get all --export -o yaml > configuration-original.yaml
     ```
 
     Or:
     ```
-    oc get all --export -o yaml -l app=appname > configuration-original.yaml
+    kubectl get all --export -o yaml -l app=appname > configuration-original.yaml
     ```
 
 1. Export persistent volume claims and add them to the configuration
 
     ```
-    oc get pvc -o yaml ...
+    kubectl get pvc -o yaml ...
     ```
 
 1. Clean up the configuration (with this app)
 
     ```
-    ./openshift-cleanup configuration-original.yaml > configuration.yaml
+    ./kleanup configuration-original.yaml > configuration.yaml
     ```
 
 1. (Optional) Perform any additional manual cleanup as desired (see below)
 
-1. (Optional) Parameterize the configs and convert into a template
-
-    [https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html#templates-writing_using-templates](https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html#templates-writing_using-templates)
+1. (Optional) Parameterize the configs and convert into a Helm chart or OpenShift template
 
 
 ### Additional manual cleanup
@@ -92,10 +90,31 @@ There's some additional manual cleanup that can be performed depending on your s
 
 ```
 go build
-tar -cvzf openshift-cleanup-linux-64bit.tar.gz openshift-cleanup
+tar -cvzf kleanup-linux-64bit.tar.gz kleanup
 GOOS=windows GOARCH=amd64 go build
-zip openshift-cleanup-windows-64bit.zip openshift-cleanup.exe
+zip kleanup-windows-64bit.zip kleanup.exe
 GOOS=darwin GOARCH=amd64 go build
-zip openshift-cleanup-mac-64bit.zip openshift-cleanup
-rm openshift-cleanup openshift-cleanup.exe
+zip kleanup-mac-64bit.zip kleanup
+rm kleanup kleanup.exe
 ```
+
+
+### Wishlist
+- Make this idempotent
+    - Currently it may fail when run on a configuration that has already been cleaned up
+
+        ```
+        $ ./kleanup testdata/openshift-list-1-original.yaml > test.yml
+        $ ./kleanup test.yml 
+        panic: interface conversion: interface {} is nil, not map[interface {}]interface {}
+
+        goroutine 1 [running]:
+        main.cleanMetadata(0xc000022510, 0x0)
+            kleanup/kleanup.go:399 +0x579
+        main.cleanOpenshiftConfig(0xc000022510, 0x60c)
+            kleanup/kleanup.go:47 +0x45
+        main.cleanOpenshiftConfigFile(0x7fff0ab4c194, 0x8, 0x1, 0xc0000182a0, 0x22)
+            kleanup/kleanup.go:37 +0x116
+        main.main()
+            kleanup/kleanup.go:22 +0x65
+        ```

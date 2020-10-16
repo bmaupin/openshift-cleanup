@@ -1,4 +1,4 @@
-module github.com/bmaupin/openshift-cleanup
+module github.com/bmaupin/kleanup
 
 require gopkg.in/yaml.v2 v2.2.4
 
