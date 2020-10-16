@@ -10,20 +10,20 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var usage = fmt.Sprintf("Usage: %s OPENSHIFT_YAML_FILE", filepath.Base(os.Args[0]))
+var usage = fmt.Sprintf("Usage: %s KUBERNETES_YAML_FILE", filepath.Base(os.Args[0]))
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("ERROR: OpenShift YAML file is required")
+		fmt.Println("ERROR: Kubernetes YAML file is required")
 		fmt.Println(usage)
 		os.Exit(1)
 	}
 
-	fmt.Print(string(cleanOpenshiftConfigFile(os.Args[1])))
+	fmt.Print(string(cleanKubernetesConfigFile(os.Args[1])))
 }
 
-func cleanOpenshiftConfigFile(openshiftConfigFilePath string) []byte {
-	contents, err := ioutil.ReadFile(openshiftConfigFilePath)
+func cleanKubernetesConfigFile(kubernetesConfigFilePath string) []byte {
+	contents, err := ioutil.ReadFile(kubernetesConfigFilePath)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +34,7 @@ func cleanOpenshiftConfigFile(openshiftConfigFilePath string) []byte {
 		panic(err)
 	}
 
-	unmarshaledConfig = cleanOpenshiftConfig(unmarshaledConfig)
+	unmarshaledConfig = cleanKubernetesConfig(unmarshaledConfig)
 
 	marshaledConfig, err := yaml.Marshal(&unmarshaledConfig)
 	if err != nil {
@@ -43,13 +43,13 @@ func cleanOpenshiftConfigFile(openshiftConfigFilePath string) []byte {
 	return marshaledConfig
 }
 
-func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	openshiftConfig = cleanMetadata(openshiftConfig)
+func cleanKubernetesConfig(kubernetesConfig map[interface{}]interface{}) map[interface{}]interface{} {
+	kubernetesConfig = cleanMetadata(kubernetesConfig)
 
 	var listKey string
 	var newChildObjects []interface{}
 
-	switch openshiftConfig["kind"] {
+	switch kubernetesConfig["kind"] {
 	// https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-listmeta
 	case "List":
 		listKey = "items"
@@ -57,24 +57,24 @@ func cleanOpenshiftConfig(openshiftConfig map[interface{}]interface{}) map[inter
 	case "Template":
 		listKey = "objects"
 	default:
-		return cleanOpenshiftObject(openshiftConfig)
+		return cleanKubernetesObject(kubernetesConfig)
 	}
 
-	for _, object := range openshiftConfig[listKey].([]interface{}) {
+	for _, object := range kubernetesConfig[listKey].([]interface{}) {
 		object := object.(map[interface{}]interface{})
-		object = cleanOpenshiftObject(object)
+		object = cleanKubernetesObject(object)
 
 		if object != nil {
 			newChildObjects = append(newChildObjects, object)
 		}
 	}
 
-	openshiftConfig[listKey] = newChildObjects
+	kubernetesConfig[listKey] = newChildObjects
 
-	return openshiftConfig
+	return kubernetesConfig
 }
 
-func cleanOpenshiftObject(object map[interface{}]interface{}) map[interface{}]interface{} {
+func cleanKubernetesObject(object map[interface{}]interface{}) map[interface{}]interface{} {
 	switch object["kind"] {
 	case "BuildConfig":
 		object = cleanBuildConfig(object)
@@ -111,7 +111,7 @@ func cleanOpenshiftObject(object map[interface{}]interface{}) map[interface{}]in
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-buildconfig
 func cleanBuildConfig(buildConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	buildConfig = cleanGenericOpenshiftObject(buildConfig)
+	buildConfig = cleanGenericKubernetesObject(buildConfig)
 	buildConfig = cleanBuildConfigSpec(buildConfig)
 
 	return buildConfig
@@ -155,7 +155,7 @@ func cleanBuildConfigSpec(buildConfig map[interface{}]interface{}) map[interface
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-deploymentconfig
 func cleanDeploymentConfig(deploymentConfig map[interface{}]interface{}) map[interface{}]interface{} {
-	deploymentConfig = cleanGenericOpenshiftObject(deploymentConfig)
+	deploymentConfig = cleanGenericKubernetesObject(deploymentConfig)
 	deploymentConfigSpec := deploymentConfig["spec"].(map[interface{}]interface{})
 	deploymentConfigSpec = cleanDeploymentConfigSpec(deploymentConfigSpec)
 
@@ -291,7 +291,7 @@ func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[i
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-imagestream
 func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]interface{} {
-	imageStream = cleanGenericOpenshiftObject(imageStream)
+	imageStream = cleanGenericKubernetesObject(imageStream)
 
 	imageStreamSpec := imageStream["spec"].(map[interface{}]interface{})
 
@@ -330,11 +330,11 @@ func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]i
 }
 
 func cleanIngress(ingress map[interface{}]interface{}) map[interface{}]interface{} {
-	return cleanGenericOpenshiftObject(ingress)
+	return cleanGenericKubernetesObject(ingress)
 }
 
 func cleanPersistentVolumeClaim(persistentVolumeClaim map[interface{}]interface{}) map[interface{}]interface{} {
-	persistentVolumeClaim = cleanGenericOpenshiftObject(persistentVolumeClaim)
+	persistentVolumeClaim = cleanGenericKubernetesObject(persistentVolumeClaim)
 
 	persistentVolumeClaimSpec := persistentVolumeClaim["spec"].(map[interface{}]interface{})
 	delete(persistentVolumeClaimSpec, "storageClassName")
@@ -345,7 +345,7 @@ func cleanPersistentVolumeClaim(persistentVolumeClaim map[interface{}]interface{
 
 // https://docs.openshift.com/container-platform/3.6/rest_api/openshift_v1.html#v1-route
 func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
-	route = cleanGenericOpenshiftObject(route)
+	route = cleanGenericKubernetesObject(route)
 
 	routeSpec := route["spec"].(map[interface{}]interface{})
 	routeSpecTo := routeSpec["to"].(map[interface{}]interface{})
@@ -356,7 +356,7 @@ func cleanRoute(route map[interface{}]interface{}) map[interface{}]interface{} {
 }
 
 func cleanSecret(secret map[interface{}]interface{}) map[interface{}]interface{} {
-	secret = cleanGenericOpenshiftObject(secret)
+	secret = cleanGenericKubernetesObject(secret)
 
 	deleteKeyIfValueMatches(secret, "type", "Opaque")
 
@@ -365,7 +365,7 @@ func cleanSecret(secret map[interface{}]interface{}) map[interface{}]interface{}
 
 // https://kubernetes.io/docs/reference/federation/v1/definitions/#_v1_service
 func cleanService(service map[interface{}]interface{}) map[interface{}]interface{} {
-	service = cleanGenericOpenshiftObject(service)
+	service = cleanGenericKubernetesObject(service)
 
 	serviceSpec := service["spec"].(map[interface{}]interface{})
 	// This is usually assigned randomly by the master
@@ -385,18 +385,18 @@ func cleanService(service map[interface{}]interface{}) map[interface{}]interface
 	return service
 }
 
-func cleanGenericOpenshiftObject(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
-	openshiftObject = cleanMetadata(openshiftObject)
+func cleanGenericKubernetesObject(kubernetesObject map[interface{}]interface{}) map[interface{}]interface{} {
+	kubernetesObject = cleanMetadata(kubernetesObject)
 
 	// Status properties across different objects are populated by the server
-	delete(openshiftObject, "status")
+	delete(kubernetesObject, "status")
 
-	return openshiftObject
+	return kubernetesObject
 }
 
 // https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
-func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]interface{} {
-	metadata := openshiftObject["metadata"].(map[interface{}]interface{})
+func cleanMetadata(kubernetesObject map[interface{}]interface{}) map[interface{}]interface{} {
+	metadata := kubernetesObject["metadata"].(map[interface{}]interface{})
 
 	if val, ok := metadata["annotations"]; ok {
 		cleanAnnotations(val.(map[interface{}]interface{}))
@@ -416,9 +416,9 @@ func cleanMetadata(openshiftObject map[interface{}]interface{}) map[interface{}]
 	// "Populated by the system. Read-only."
 	delete(metadata, "uid")
 
-	deleteKeyIfEmpty(openshiftObject, "metadata")
+	deleteKeyIfEmpty(kubernetesObject, "metadata")
 
-	return openshiftObject
+	return kubernetesObject
 }
 
 func cleanAnnotations(annotations map[interface{}]interface{}) map[interface{}]interface{} {

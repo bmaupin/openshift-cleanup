@@ -12,7 +12,7 @@ func TestIngressCleanup(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/ingress-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/ingress-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Logf("Expected: \n%s", string(testContents))
 		t.Logf("Received: \n%s", string(cleanedContents))
@@ -26,7 +26,7 @@ func TestSecretCleanup(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/secret-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/secret-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Logf("Expected: \n%s", string(testContents))
 		t.Logf("Received: \n%s", string(cleanedContents))
@@ -40,7 +40,7 @@ func TestListCleanup1(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-1-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-list-1-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Logf("Expected: \n%s", string(testContents))
 		t.Logf("Received: \n%s", string(cleanedContents))
@@ -54,7 +54,7 @@ func TestListCleanup2(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-2-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-list-2-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Logf("Expected: \n%s", string(testContents))
 		t.Logf("Received: \n%s", string(cleanedContents))
@@ -68,7 +68,7 @@ func TestListCleanupNodejsEx(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-nodejs-ex-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-list-nodejs-ex-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Logf("Expected: \n%s", string(testContents))
 		t.Logf("Received: \n%s", string(cleanedContents))
@@ -82,7 +82,7 @@ func TestListCleanupNodejsExJson(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-list-nodejs-ex-original.json")
+	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-list-nodejs-ex-original.json")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Logf("Expected: \n%s", string(testContents))
 		t.Logf("Received: \n%s", string(cleanedContents))
@@ -96,7 +96,7 @@ func TestTemplateCleanup1(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-template-1-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-template-1-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Error("Cleaned template contents don't match")
 	}
@@ -108,7 +108,7 @@ func TestTemplateCleanup2(t *testing.T) {
 		t.Errorf("Unexpected error reading test data file: %s", err)
 	}
 
-	cleanedContents := cleanOpenshiftConfigFile("testdata/openshift-template-2-original.yaml")
+	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-template-2-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Error("Cleaned template contents don't match")
 	}
