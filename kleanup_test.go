@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
+	"strings"
 	"testing"
 )
 
@@ -111,5 +113,33 @@ func TestTemplateCleanup2(t *testing.T) {
 	cleanedContents := cleanKubernetesConfigFile("testdata/openshift-template-2-original.yaml")
 	if bytes.Compare(cleanedContents, testContents) != 0 {
 		t.Error("Cleaned template contents don't match")
+	}
+}
+
+func TestIdempotency(t *testing.T) {
+	const testdataDirectory = "testdata"
+
+	testFiles, err := ioutil.ReadDir(testdataDirectory)
+	if err != nil {
+		t.Errorf("Unexpected error getting files in testdata directory: %s", err)
+	}
+
+	for _, testFile := range testFiles {
+		if strings.Contains(testFile.Name(), "-cleaned.") {
+			testFilePath := fmt.Sprintf("%s/%s", testdataDirectory, testFile.Name())
+
+			testContents, err := ioutil.ReadFile(testFilePath)
+			if err != nil {
+				t.Errorf("Unexpected error reading test data file: %s", err)
+			}
+
+			t.Logf("Testing against %s for idempotency", testFilePath)
+			cleanedContents := cleanKubernetesConfigFile(testFilePath)
+			if bytes.Compare(cleanedContents, testContents) != 0 {
+				t.Logf("Expected: \n%s", string(testContents))
+				t.Logf("Received: \n%s", string(cleanedContents))
+				t.Error("Cleaned list contents don't match")
+			}
+		}
 	}
 }

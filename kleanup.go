@@ -293,33 +293,35 @@ func cleanDeploymentTrigger(deploymentTrigger map[interface{}]interface{}) map[i
 func cleanImageStream(imageStream map[interface{}]interface{}) map[interface{}]interface{} {
 	imageStream = cleanGenericKubernetesObject(imageStream)
 
-	imageStreamSpec := imageStream["spec"].(map[interface{}]interface{})
+	if val, ok := imageStream["spec"]; ok {
+		imageStreamSpec := val.(map[interface{}]interface{})
 
-	if val, ok := imageStreamSpec["lookupPolicy"]; ok {
-		imageLookupPolicy := val.(map[interface{}]interface{})
-		deleteKeyIfValueMatches(imageLookupPolicy, "local", false)
-	}
-	deleteKeyIfEmpty(imageStreamSpec, "lookupPolicy")
+		if val, ok := imageStreamSpec["lookupPolicy"]; ok {
+			imageLookupPolicy := val.(map[interface{}]interface{})
+			deleteKeyIfValueMatches(imageLookupPolicy, "local", false)
+		}
+		deleteKeyIfEmpty(imageStreamSpec, "lookupPolicy")
 
-	if val, ok := imageStreamSpec["tags"]; ok {
-		tagReferences := val.([]interface{})
+		if val, ok := imageStreamSpec["tags"]; ok {
+			tagReferences := val.([]interface{})
 
-		for _, tagReference := range tagReferences {
-			tagReference := tagReference.(map[interface{}]interface{})
+			for _, tagReference := range tagReferences {
+				tagReference := tagReference.(map[interface{}]interface{})
 
-			if tagReference["annotations"] != nil {
-				cleanAnnotations(tagReference["annotations"].(map[interface{}]interface{}))
-				deleteKeyIfEmpty(tagReference, "annotations")
-			}
-			deleteKeyIfValueMatches(tagReference, "annotations", nil)
-			delete(tagReference, "generation")
-			deleteKeyIfEmpty(tagReference, "importPolicy")
+				if tagReference["annotations"] != nil {
+					cleanAnnotations(tagReference["annotations"].(map[interface{}]interface{}))
+					deleteKeyIfEmpty(tagReference, "annotations")
+				}
+				deleteKeyIfValueMatches(tagReference, "annotations", nil)
+				delete(tagReference, "generation")
+				deleteKeyIfEmpty(tagReference, "importPolicy")
 
-			if val, ok := tagReference["referencePolicy"]; ok {
-				tagReferencePolicy := val.(map[interface{}]interface{})
-				deleteKeyIfValueMatches(tagReferencePolicy, "type", "")
-				deleteKeyIfValueMatches(tagReferencePolicy, "type", "Source")
-				deleteKeyIfEmpty(tagReference, "referencePolicy")
+				if val, ok := tagReference["referencePolicy"]; ok {
+					tagReferencePolicy := val.(map[interface{}]interface{})
+					deleteKeyIfValueMatches(tagReferencePolicy, "type", "")
+					deleteKeyIfValueMatches(tagReferencePolicy, "type", "Source")
+					deleteKeyIfEmpty(tagReference, "referencePolicy")
+				}
 			}
 		}
 	}
@@ -396,27 +398,29 @@ func cleanGenericKubernetesObject(kubernetesObject map[interface{}]interface{}) 
 
 // https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/apis/meta/v1/types.go
 func cleanMetadata(kubernetesObject map[interface{}]interface{}) map[interface{}]interface{} {
-	metadata := kubernetesObject["metadata"].(map[interface{}]interface{})
+	if val, ok := kubernetesObject["metadata"]; ok {
+		metadata := val.(map[interface{}]interface{})
 
-	if val, ok := metadata["annotations"]; ok {
-		cleanAnnotations(val.(map[interface{}]interface{}))
-		deleteKeyIfEmpty(metadata, "annotations")
+		if val, ok := metadata["annotations"]; ok {
+			cleanAnnotations(val.(map[interface{}]interface{}))
+			deleteKeyIfEmpty(metadata, "annotations")
+		}
+
+		delete(metadata, "creationTimestamp")
+		delete(metadata, "finalizers")
+		// "Populated by the system. Read-only."
+		delete(metadata, "generation")
+		// Namespace can be removed because it can be specified via a parameter to oc create
+		delete(metadata, "namespace")
+		// "Populated by the system. Read-only."
+		delete(metadata, "resourceVersion")
+		// "Populated by the system. Read-only."
+		delete(metadata, "selfLink")
+		// "Populated by the system. Read-only."
+		delete(metadata, "uid")
+
+		deleteKeyIfEmpty(kubernetesObject, "metadata")
 	}
-
-	delete(metadata, "creationTimestamp")
-	delete(metadata, "finalizers")
-	// "Populated by the system. Read-only."
-	delete(metadata, "generation")
-	// Namespace can be removed because it can be specified via a parameter to oc create
-	delete(metadata, "namespace")
-	// "Populated by the system. Read-only."
-	delete(metadata, "resourceVersion")
-	// "Populated by the system. Read-only."
-	delete(metadata, "selfLink")
-	// "Populated by the system. Read-only."
-	delete(metadata, "uid")
-
-	deleteKeyIfEmpty(kubernetesObject, "metadata")
 
 	return kubernetesObject
 }
