@@ -97,24 +97,3 @@ GOOS=darwin GOARCH=amd64 go build
 zip kleanup-mac-64bit.zip kleanup
 rm kleanup kleanup.exe
 ```
-
-
-### Wishlist
-- Make this idempotent
-    - Currently it may fail when run on a configuration that has already been cleaned up
-
-        ```
-        $ ./kleanup testdata/openshift-list-1-original.yaml > test.yml
-        $ ./kleanup test.yml 
-        panic: interface conversion: interface {} is nil, not map[interface {}]interface {}
-
-        goroutine 1 [running]:
-        main.cleanMetadata(0xc000022510, 0x0)
-            kleanup/kleanup.go:399 +0x579
-        main.cleanOpenshiftConfig(0xc000022510, 0x60c)
-            kleanup/kleanup.go:47 +0x45
-        main.cleanOpenshiftConfigFile(0x7fff0ab4c194, 0x8, 0x1, 0xc0000182a0, 0x22)
-            kleanup/kleanup.go:37 +0x116
-        main.main()
-            kleanup/kleanup.go:22 +0x65
-        ```
