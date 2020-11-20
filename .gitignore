@@ -1,6 +1,6 @@
 /*.tar.gz
 /*.zip
 /.vscode/
-/openshift-cleanup
-/openshift-cleanup.exe
+/kleanup
+/kleanup.exe
 /vendor/
