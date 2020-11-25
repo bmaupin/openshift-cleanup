@@ -3,7 +3,7 @@
 ---
 
 This removes unnecessary objects and parameters from an exported Kubernetes or OpenShift configuration so that it can be more easily
-managed and optionally turned into a template.
+managed and optionally turned into a Helm chart or OpenShift template.
 
 
 ### Features
